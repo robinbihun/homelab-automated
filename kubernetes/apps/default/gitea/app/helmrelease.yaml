@@ -1,0 +1,58 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitea
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: gitea
+  interval: 1h
+  values:
+    # TODO: if the additionalConfigFromEnvs does not work, uncomment below
+    # deployment:
+    #   env:
+    #     - name: GITEA_RUNNER_REGISTRATION_TOKEN
+    #       valueFrom:
+    #         secretKeyRef:
+    #           name: runner-secret
+    #           key: token
+    gitea:
+      admin:
+        existingSecret: gitea-admin-secret
+        email: "admin@bihun.dev"
+
+      config:
+        APP_NAME: bihun.dev code repository
+        RUN_MODE: prod
+
+      additionalConfigSources:
+        - configMap:
+            name: gitea-config
+        - secret:
+            secretName: gitea-config-secret
+      
+      additionalConfigFromEnvs:
+        - name: GITEA_RUNNER_REGISTRATION_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: runner-secret
+              key: token
+      
+      metrics:
+        enabled: true
+
+    ingress:
+      enabled: false
+
+    postgresql:
+      enabled: false
+
+    postgresql-ha:
+      enabled: false
+
+    valkey-cluster:
+      enabled: false
+
+    valkey:
+      enabled: false

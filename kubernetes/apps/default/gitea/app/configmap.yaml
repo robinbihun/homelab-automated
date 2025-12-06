@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitea-config
+  namespace: default
+data:
+  # The contents of app.ini will be merged with the default configuration and the secrets from the gitea-config-secret
+  # Kubernetes ConfigMap Format for Gitea: https://gitea.com/gitea/helm-gitea#additional-_appini_-settings
+  # Config Ref: https://docs.gitea.com/administration/config-cheat-sheet
+  session: |
+    PROVIDER=db
+  server: |
+    DOMAIN=code.${SECRET_DOMAIN}
+    ROOT_URL=https://code.${SECRET_DOMAIN}/
+    SSH_DOMAIN=git.${SECRET_DOMAIN}
+  database: |
+    DB_TYPE=postgres
+    HOST=pgsql.internal.bihun.dev:5432
+    NAME=gitea
+  service: |
+    DISABLE_REGISTRATION=false
+    SHOW_REGISTRATION_BUTTON=false

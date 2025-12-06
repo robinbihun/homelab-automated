@@ -1,0 +1,61 @@
+[tools]
+# Repository Management
+pkl = "0.30"
+hk = "1.25"
+prettier = "3.7"
+ruff = "0.14"
+shellcheck = "0.11"
+yamllint = "1.37"
+typos = "1.40"
+task = "3.45"
+
+# Scripting
+python = "3.14"
+jq = "1.8"
+yq = "4.49"
+cue = "0.15"
+
+# Template Rendering
+pipx = "1.8"
+'pipx:makejinja' = "2.8"
+
+# Encryption Tools
+sops = "3.11"
+age = "1.2"
+
+# Talos Management
+talos = "1.11"
+talhelper = "3.0"
+"aqua:cli/cli" = "2.83"
+
+# Kubernetes Tools
+k9s = "0.50"
+kubectl = "1.34"
+kustomize = "5.8"
+kubeconform = "0.7.0"
+helm = "3.19.2"
+helmfile = "1.1"
+cilium-cli = "0.18"
+flux2 = "2.7"
+
+# Cloudflare Tools
+cloudflared = "2025.11.1"
+
+[env]
+_.python.venv = { path = "{{config_root}}/.venv", create = true }
+SOPS_AGE_KEY_FILE = "{{ config_root }}/age.key"
+TEMPLATE_DIR = "{{ config_root }}/.mise/templates"
+MAKEJINJA_SETTINGS = "{{ config_root }}/makejinja.toml"
+BOOTSTRAP_DIR = "{{ config_root }}/bootstrap"
+KUBERNETES_DIR = "{{ config_root }}/kubernetes"
+SCRIPTS_DIR = "{{ config_root }}/scripts"
+TALOS_DIR = "{{ config_root }}/talos"
+PRIVATE_DIR = "{{ config_root }}/.private"
+TALOSCONFIG = "{{ config_root }}/talos/clusterconfig/talosconfig"
+KUBECONFIG = "{{ config_root }}/kubeconfig"
+
+[tasks.reconcile]
+description = "Reconcile configuration changes to the cluster"
+run = [
+    "flux namespace flux-system reconcile kustomization flux-system --with-source"
+]

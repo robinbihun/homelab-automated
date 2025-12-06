@@ -1,0 +1,41 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: keycloak
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: keycloak
+  interval: 1h
+  values:
+    keycloak:
+      adminUser: admin
+      existingSecret: keycloak-admin-secret
+
+      httpEnabled: true
+      httpPort: 8080
+
+      hostname: auth.${SECRET_DOMAIN}
+      production: true
+      proxyHeaders: "xforwarded"
+
+    database:
+      type: "postgres"
+      host: "pgsql.internal.bihun.dev"
+      port: "5432"
+      name: "keycloak"
+      existingSecret: keycloak-db-secret
+
+    metrics:
+      enabled: true
+
+    # Disable embedded databases
+    postgres:
+      enabled: false
+    mariadb:
+      enabled: false
+    
+    # Disable Ingress to use Router instead
+    ingress:
+      enabled: false
