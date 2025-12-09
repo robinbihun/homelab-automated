@@ -14,6 +14,7 @@ data:
     DOMAIN=code.${SECRET_DOMAIN}
     ROOT_URL=https://code.${SECRET_DOMAIN}/
     SSH_DOMAIN=git.${SECRET_DOMAIN}
+    OFFLINE_MODE=false
   database: |
     DB_TYPE=postgres
     HOST=pgsql.internal.bihun.dev:5432
