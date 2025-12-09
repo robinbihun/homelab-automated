@@ -6,6 +6,7 @@ SECRET_FILES=$(find "$BOOTSTRAP_DIR" "$KUBERNETES_DIR" "$TALOS_DIR" -type f -nam
 
 for FILE in $SECRET_FILES; do
     if [ "$(sops filestatus "$FILE" | jq ".encrypted")" == "false" ]; then
+        echo "Encrypting secrets file: $FILE"
         sops --encrypt --in-place "$FILE"
     fi
 done
