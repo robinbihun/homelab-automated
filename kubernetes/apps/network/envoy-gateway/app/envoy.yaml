@@ -90,12 +90,14 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
-    - name: ssh
+    - name: git-ssh
       protocol: TCP
       port: 22
       allowedRoutes:
         namespaces:
           from: All
+        kinds:
+          - kind: TCPRoute
     - name: https
       protocol: HTTPS
       port: 443
