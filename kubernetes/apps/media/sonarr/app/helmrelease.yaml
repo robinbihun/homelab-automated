@@ -3,31 +3,31 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: radarr
+  name: sonarr
 spec:
   chartRef:
     kind: OCIRepository
-    name: radarr
+    name: sonarr
   interval: 1h
   values:
     controllers:
-      radarr:
+      sonarr:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/home-operations/radarr
-              tag: 6.1
+              repository: ghcr.io/home-operations/sonarr
+              tag: 4.0
             env:
-              RADARR__APP__INSTANCENAME: Radarr
-              RADARR__APP__THEME: dark
-              RADARR__AUTH__METHOD: External
-              RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
-              RADARR__LOG__DBENABLED: "False"
-              RADARR__LOG__LEVEL: info
-              RADARR__SERVER__PORT: &port 80
-              RADARR__UPDATE__BRANCH: develop
+              sonarr__APP__INSTANCENAME: Sonarr
+              sonarr__APP__THEME: dark
+              sonarr__AUTH__METHOD: External
+              sonarr__AUTH__REQUIRED: DisabledForLocalAddresses
+              sonarr__LOG__DBENABLED: "False"
+              sonarr__LOG__LEVEL: info
+              sonarr__SERVER__PORT: &port 80
+              sonarr__UPDATE__BRANCH: develop
               TZ: America/Chicago
             envFrom:
               - secretRef:
@@ -76,7 +76,7 @@ spec:
             sectionName: https
         rules:
         - backendRefs:
-            - name: radarr
+            - name: sonarr
               port: *port
     persistence:
       config:
