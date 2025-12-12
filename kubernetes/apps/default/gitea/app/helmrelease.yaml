@@ -28,7 +28,7 @@ spec:
 
       additionalConfigSources:
         - configMap:
-            name: gitea-config
+            name: &configmap gitea-config
         - secret:
             secretName: gitea-config-secret
       
@@ -36,11 +36,15 @@ spec:
         - name: GITEA_RUNNER_REGISTRATION_TOKEN
           valueFrom:
             secretKeyRef:
-              name: runner-secret
+              name:  runner-secret
               key: token
       
       metrics:
         enabled: true
+
+      podAnnotations:
+        secret.reloader.stakater.com/reload: "gitea-config-secret,runner-secret"
+        configmap.reloader.stakater.com/reload: *configmap
 
     ingress:
       enabled: false
