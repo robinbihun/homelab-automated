@@ -10,4 +10,5 @@ resources:
   - ./keycloak/ks.yaml
   - ./gitea/ks.yaml
   - ./gitea-act/ks.yaml
+  - ./nebula-sync/ks.yaml
   
