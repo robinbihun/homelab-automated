@@ -57,5 +57,5 @@ KUBECONFIG = "{{ config_root }}/kubeconfig"
 [tasks.reconcile]
 description = "Reconcile configuration changes to the cluster"
 run = [
-    "flux namespace flux-system reconcile kustomization flux-system --with-source"
+    "flux --namespace flux-system reconcile kustomization flux-system --with-source"
 ]
