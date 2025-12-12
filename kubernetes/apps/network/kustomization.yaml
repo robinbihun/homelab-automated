@@ -8,7 +8,8 @@ components:
 
 resources:
   - ./namespace.yaml
-  - ./cloudflare-dns/ks.yaml
+  - ./cloudflare-dns/ks.yaml # External (pulic) DNS
+  - ./pihole-dns/ks.yaml # Internal (Private) DNS
   - ./cloudflare-tunnel/ks.yaml
   - ./envoy-gateway/ks.yaml
   - ./k8s-gateway/ks.yaml
