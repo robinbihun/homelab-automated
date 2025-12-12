@@ -13,7 +13,7 @@ data:
   server: |
     DOMAIN=code.${SECRET_DOMAIN}
     ROOT_URL=https://code.${SECRET_DOMAIN}/
-    SSH_DOMAIN=git.${SECRET_DOMAIN}
+    SSH_DOMAIN=code.${SECRET_DOMAIN}
     OFFLINE_MODE=false
   database: |
     DB_TYPE=postgres
