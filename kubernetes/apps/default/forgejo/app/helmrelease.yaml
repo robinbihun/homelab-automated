@@ -22,20 +22,13 @@ spec:
         - configMap:
             name: &configmap forgejo-config
         - secret:
-            secretName: forgejo-config-secret
-      
-      additionalConfigFromEnvs:
-        - name: GITEA_RUNNER_REGISTRATION_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name:  forgejo-runner-secret
-              key: token
+            secretName: &configsecret forgejo-config-secret
       
       metrics:
         enabled: true
 
       podAnnotations:
-        secret.reloader.stakater.com/reload: "forgejo-config-secret,forgejo-runner-secret"
+        secret.reloader.stakater.com/reload: *configsecret
         configmap.reloader.stakater.com/reload: *configmap
 
     ingress:
