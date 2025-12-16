@@ -10,8 +10,8 @@ resources:
   - ./keycloak/ks.yaml
   # - ./gitea/ks.yaml
   # - ./gitea-act/ks.yaml
-  - ./forgejo/ks.yaml
-  - ./forgejo-runner/ks.yaml
+  # - ./forgejo/ks.yaml
+  # - ./forgejo-runner/ks.yaml
   - ./nebula-sync/ks.yaml
   - ./bentopdf/ks.yaml
   
