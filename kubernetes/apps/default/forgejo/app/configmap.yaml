@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: forgejo-config
+  namespace: default
+data:
+  # The contents of app.ini will be merged with the default configuration and the secrets from the forgejo-config-secret
+  # Kubernetes ConfigMap Format for Gitea: https://gitea.com/gitea/helm-gitea#additional-_appini_-settings
+  # Config Ref: https://docs.gitea.com/administration/config-cheat-sheet
+  session: |
+    PROVIDER=db
+  server: |
+    DOMAIN=code.${SECRET_DOMAIN}
+    ROOT_URL=https://code.${SECRET_DOMAIN}/
+    SSH_DOMAIN=code.${SECRET_DOMAIN}
+    OFFLINE_MODE=false
+  database: |
+    DB_TYPE=postgres
+    HOST=pgsql.internal.bihun.dev:5432
+    NAME=forgejo
+  service: |
+    DISABLE_REGISTRATION=false
+    SHOW_REGISTRATION_BUTTON=false

@@ -1,0 +1,54 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: forgejo
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: forgejo
+  interval: 1h
+  values:
+    gitea:
+      admin:
+        existingSecret: forgejo-admin-secret
+        email: "admin@bihun.dev"
+
+      config:
+        APP_NAME: bihun.dev code repository
+        RUN_MODE: prod
+
+      additionalConfigSources:
+        - configMap:
+            name: &configmap forgejo-config
+        - secret:
+            secretName: forgejo-config-secret
+      
+      additionalConfigFromEnvs:
+        - name: GITEA_RUNNER_REGISTRATION_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name:  forgejo-runner-secret
+              key: token
+      
+      metrics:
+        enabled: true
+
+      podAnnotations:
+        secret.reloader.stakater.com/reload: "forgejo-config-secret,forgejo-runner-secret"
+        configmap.reloader.stakater.com/reload: *configmap
+
+    ingress:
+      enabled: false
+
+    postgresql:
+      enabled: false
+
+    postgresql-ha:
+      enabled: false
+
+    valkey-cluster:
+      enabled: false
+
+    valkey:
+      enabled: false
