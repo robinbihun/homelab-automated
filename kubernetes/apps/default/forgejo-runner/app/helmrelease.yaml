@@ -12,8 +12,7 @@ spec:
     runner:
       config:
         create: true
-        existingSecret: "forgejo-runner-secret"
-        instance: "http://forgejo-http.default.svc.cluster.local:3000"
+        existingInitSecret: "forgejo-runner-secret"
         file:
           log:
             level: "info"
