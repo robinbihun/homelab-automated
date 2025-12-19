@@ -5,6 +5,7 @@ namespace: default
 
 components:
   - ../../components/sops
+  - ../../components/repos/app-template
 
 resources:
   - ./keycloak/ks.yaml
