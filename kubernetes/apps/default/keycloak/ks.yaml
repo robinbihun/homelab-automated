@@ -17,7 +17,7 @@ spec:
       - name: cluster-secrets
         kind: Secret
   dependsOn:
-    - name: infisical-secrets
+    - name: external-secrets-infisical
       namespace: external-secrets
   prune: true
   sourceRef:

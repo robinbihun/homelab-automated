@@ -7,7 +7,7 @@ metadata:
 spec:
   chartRef:
     kind: OCIRepository
-    name: automation
+    name: app-template
   interval: 1h
   values:
     controllers:
@@ -97,7 +97,7 @@ spec:
     persistence:
       config:
         type: nfs
-        server: ${NFS_SERVER_IP}
+        server: ${NFS_HOST}
         path: /mnt/storage/files/apps/automation
         advancedMounts:
           n8n:

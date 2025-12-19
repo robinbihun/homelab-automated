@@ -7,7 +7,7 @@ metadata:
 spec:
   chartRef:
     kind: OCIRepository
-    name: radarr
+    name: app-template
   interval: 1h
   values:
     controllers:
@@ -83,7 +83,7 @@ spec:
         existingClaim: "{{ .Release.Name }}"
       media:
         type: nfs
-        server: ${NFS_SERVER_IP}
+        server: ${NFS_HOST}
         path: /mnt/storage/media
         globalMounts:
           - path: /data

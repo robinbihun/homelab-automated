@@ -5,6 +5,7 @@ namespace: observability
 
 components:
   - ../../components/sops
+  - ../../components/repos/app-template
 
 resources:
   - ./fluent-bit/ks.yaml

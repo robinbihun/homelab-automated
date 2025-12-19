@@ -20,6 +20,7 @@ spec:
     substitute:
       APP: *app
       GATUS_SUBDOMAIN: prometheus
+      GATUS_PATH: /-/healthy
     substituteFrom:
       - name: cluster-secrets
         kind: Secret

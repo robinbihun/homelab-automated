@@ -8,7 +8,7 @@ spec:
   interval: 1h
   chartRef:
     kind: OCIRepository
-    name: gatus
+    name: app-template
   install:
     remediation:
       retries: -1
@@ -87,7 +87,16 @@ spec:
           - port: http
     route:
       app:
-        enabled: false
+        hostnames:
+          - status.${SECRET_DOMAIN}
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+        - backendRefs:
+            - name: gatus
+              port: *port
     rbac:
       roles:
         gatus:

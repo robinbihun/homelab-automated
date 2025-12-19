@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: media
 
 components:
+  - ../../components/repos/app-template
   - ../../components/sops
 
 resources:
@@ -12,4 +13,5 @@ resources:
   - ./sonarr/ks.yaml
   - ./seerr/ks.yaml
   - ./recyclarr/ks.yaml
+  - ./jellyfin/ks.yaml
 

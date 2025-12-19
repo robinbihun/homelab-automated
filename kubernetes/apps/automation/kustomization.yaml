@@ -5,6 +5,7 @@ namespace: automation
 
 components:
   - ../../components/sops
+  - ../../components/repos/app-template
 
 resources:
   - ./namespace.yaml

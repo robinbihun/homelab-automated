@@ -28,22 +28,22 @@ Kubernetes Services:
 
 Security:
 	User Identity and Authentication using KeyCloak
-		login.bihun.dev
+		auth.bihun.dev
 		
 Code Management:
-	Using gitea
+	Using forgejo
 		code.bihun.dev (:443, web ui)
-		git.bihun.dev (:22, ssh)
+		code.bihun.dev (:22, ssh)
 
 Generic Tools and Utilities:
 	PDF Tools
-		Using Stirling PDF, may switch to better more private software tooling
+		BentoPDF
 			pdf.bihun.dev
 	Spoolman
 		Filament management for 3D printers
 			spoolman.bihun.dev
 	Dashboard
-		TBD
+		TBD -- hajimari looks nice, ref: https://github.com/christfriedbalizou/homelab/blob/main/kubernetes/apps/default/hajimari/ks.yaml
 			dash.bihun.dev
 
 
