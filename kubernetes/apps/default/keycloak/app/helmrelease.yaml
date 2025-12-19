@@ -22,7 +22,7 @@ spec:
 
     database:
       type: "postgres"
-      host: "pgsql.internal.bihun.dev"
+      host: "${PGSQL_HOST}"
       port: "5432"
       name: "keycloak"
       existingSecret: keycloak-db-secret

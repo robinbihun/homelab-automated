@@ -17,7 +17,7 @@ data:
     OFFLINE_MODE=false
   database: |
     DB_TYPE=postgres
-    HOST=pgsql.internal.bihun.dev:5432
+    HOST=${PGSQL_HOST}:5432
     NAME=forgejo
   service: |
     DISABLE_REGISTRATION=false

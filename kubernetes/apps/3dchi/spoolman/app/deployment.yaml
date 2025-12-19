@@ -29,7 +29,7 @@ spec:
             - name: SPOOLMAN_PORT
               value: "7912"
             - name: SPOOLMAN_DB_HOST
-              value: pgsql.internal.bihun.dev
+              value: ${PGSQL_HOST}
             - name: SPOOLMAN_DB_PORT
               value: "5432"
             - name: SPOOLMAN_DB_NAME

@@ -83,7 +83,7 @@ spec:
         existingClaim: "{{ .Release.Name }}"
       media:
         type: nfs
-        server: 10.10.10.2
+        server: ${NFS_SERVER_IP}
         path: /mnt/storage/media
         globalMounts:
           - path: /data

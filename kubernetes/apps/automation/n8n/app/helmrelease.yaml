@@ -14,26 +14,6 @@ spec:
       n8n:
         annotations:
           reloader.stakater.com/auto: "true"
-        # initContainers:
-        #   init-db:
-        #     image:
-        #       repository: ghcr.io/home-operations/postgres-init
-        #       tag: 18
-        #       pullPolicy: IfNotPresent
-        #     env:
-        #       INIT_POSTGRES_DBNAME: n8n
-        #       INIT_POSTGRES_HOST: &pghost pgsql.internal.bihun.dev
-        #       INIT_POSTGRES_SUPER_PASS: "${POSTGRES_SUPERUSER_PASSWORD}"
-        #       INIT_POSTGRES_USER:
-        #         valueFrom:
-        #           secretKeyRef:
-        #             name: &secret cluster-n8n-secrets
-        #             key: DB_POSTGRESDB_USER
-        #       INIT_POSTGRES_PASS:
-        #         valueFrom:
-        #           secretKeyRef:
-        #             name: *secret
-        #             key: DB_POSTGRESDB_PASSWORD
         containers:
           app:
             image:
@@ -57,7 +37,7 @@ spec:
               N8N_HOST: &host n8n.${SECRET_DOMAIN}
               N8N_PUBLIC_API_DISABLED: true
               N8N_PUBLIC_API_SWAGGERUI_DISABLED: true
-              N8N_USER_FOLDER: /home/n8n/app
+              N8N_USER_FOLDER: &homedir /home/n8n/app
               N8N_PERSONALIZATION_ENABLED: false
               N8N_HIRING_BANNER_ENABLED: false
 
@@ -70,7 +50,7 @@ spec:
 
               # Database
               DB_TYPE: postgresdb
-              DB_POSTGRESDB_HOST: pgsql.internal.bihun.dev
+              DB_POSTGRESDB_HOST: ${PGSQL_HOST}
 
               # # User Management
               # N8N_SMTP_HOST: smtp-relay.networking.svc.cluster.local
@@ -117,13 +97,13 @@ spec:
     persistence:
       config:
         type: nfs
-        server: 10.10.10.2
-        path: /mnt/storage/files/apps/default
+        server: ${NFS_SERVER_IP}
+        path: /mnt/storage/files/apps/automation
         advancedMounts:
           n8n:
             app:
               - subPath: n8n
-                path: /home/n8n/app
+                path: *homedir
 
     defaultPodOptions:
       securityContext:
