@@ -13,4 +13,5 @@ resources:
   - ./forgejo-runner/ks.yaml
   - ./nebula-sync/ks.yaml
   - ./bentopdf/ks.yaml
+  - ./paperless/ks.yaml
   

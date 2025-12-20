@@ -32,7 +32,7 @@ spec:
               PAPERLESS_WEBSERVER_WORKERS: "2"
               PAPERLESS_TASK_WORKERS: "2"
               PAPERLESS_ACCOUNT_ALLOW_SIGNUPS: "false"
-              PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: "false"
+              PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: "true"
               PAPERLESS_CONSUMPTION_DIR: /data/nas/consume
               PAPERLESS_DATA_DIR: /data/local/data
               PAPERLESS_EXPORT_DIR: /data/nas/export
@@ -42,7 +42,8 @@ spec:
               PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: "true"
               PAPERLESS_OCR_LANGUAGE: "eng"
               PAPERLESS_DBHOST: ${PGSQL_HOST}
-              PAPERLESS_REDIS: ${REDIS_HOST}/3
+              PAPERLESS_DBPORT: "5432"
+              PAPERLESS_REDIS: ${REDIS_HOST}/0
               USERMAP_UID: "1000"
               USERMAP_GID: "1000"
             envFrom:
@@ -82,13 +83,17 @@ spec:
         type: nfs
         server: ${NFS_HOST}
         path: /mnt/storage/media
-        globalMounts:
-          - subPath: paperless
-            path: /data/local
+        advancedMounts:
+          paperless:
+            app:
+              - subPath: paperless
+                path: /data/local
       nas:
         type: nfs
         server: ${NFS_HOST}
         path: /mnt/storage/files/apps/default
-        globalMounts:
-          - subPath: paperless
-            path: /data/nas
+        advancedMounts:
+          paperless:
+            app:
+              - subPath: paperless
+                path: /data/nas
