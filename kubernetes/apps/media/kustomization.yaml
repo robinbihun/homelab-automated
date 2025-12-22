@@ -11,7 +11,7 @@ resources:
   - ./namespace.yaml
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
-  - ./seerr/ks.yaml
+  # - ./seerr/ks.yaml
   - ./recyclarr/ks.yaml
   - ./jellyfin/ks.yaml
 
