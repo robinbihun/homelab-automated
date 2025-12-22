@@ -14,7 +14,7 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: watch
+      GATUS_SUBDOMAIN: requests
       GATUS_IGNORE_REDIRECT: "false"
     substituteFrom:
       - name: cluster-secrets
