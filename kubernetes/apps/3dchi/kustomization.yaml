@@ -5,7 +5,9 @@ namespace: 3dchi
 
 components:
   - ../../components/sops
+  - ../../components/repos/app-template
 
 resources:
   - ./namespace.yaml
   - ./spoolman/ks.yaml
+  - ./manyfold/ks.yaml
