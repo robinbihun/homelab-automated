@@ -9,6 +9,10 @@ spec:
     name: forgejo
   interval: 1h
   values:
+    image:
+      registry: code.forgejo.org
+      repository: forgejo/forgejo
+      tag: 13.0.3-rootless
     gitea:
       admin:
         existingSecret: forgejo-admin-secret
