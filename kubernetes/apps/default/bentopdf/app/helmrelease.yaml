@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: ghcr.io/alam00000/bentopdf-simple
-              tag: 1.11.1
+              tag: v1.15.4
             ports:
               - containerPort: &port 8080
             env:
