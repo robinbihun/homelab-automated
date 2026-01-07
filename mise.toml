@@ -34,7 +34,7 @@ kubectl = "1.34"
 kustomize = "5.8"
 kubeconform = "0.7.0"
 helm = "3.19.4"
-helmfile = "1.1"
+helmfile = "1.2.3"
 cilium-cli = "0.18"
 flux2 = "2.7"
 
