@@ -14,7 +14,7 @@ spec:
       repository: renovatebot/renovate
       tag: 42.74.1
     cronjob:
-      schedule: "0 * * * *"
+      schedule: "0 1 * * *"
       concurrencyPolicy: Forbid
       failedJobsHistoryLimit: 1
       successfulJobsHistoryLimit: 1
