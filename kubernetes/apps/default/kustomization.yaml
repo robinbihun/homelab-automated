@@ -11,6 +11,7 @@ resources:
   - ./keycloak/ks.yaml
   - ./forgejo/ks.yaml
   - ./forgejo-runner/ks.yaml
+  - ./forgejo-renovate/ks.yaml
   - ./renovate/ks.yaml
   - ./nebula-sync/ks.yaml
   - ./bentopdf/ks.yaml

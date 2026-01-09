@@ -16,10 +16,10 @@ spec:
     gitea:
       admin:
         existingSecret: forgejo-admin-secret
-        email: "admin@bihun.dev"
+        email: "admin@${SECRET_DOMAIN}"
 
       config:
-        APP_NAME: bihun.dev code repository
+        APP_NAME: ${SECRET_DOMAIN} code repository
         RUN_MODE: prod
 
       additionalConfigSources:
@@ -37,6 +37,15 @@ spec:
 
     ingress:
       enabled: false
+
+    httpRoute:
+      enabled: true
+      parentRefs:
+        - name: envoy-internal
+          namespace: network
+          sectionName: https
+      hostnames:
+        - code.${SECRET_DOMAIN}
 
     postgresql:
       enabled: false
