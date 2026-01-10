@@ -17,4 +17,5 @@ resources:
   - ./bentopdf/ks.yaml
   - ./paperless/ks.yaml
   - ./immich/ks.yaml
+  - ./harbor/ks.yaml
   

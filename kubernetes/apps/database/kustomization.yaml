@@ -8,4 +8,4 @@ components:
 
 resources:
   - ./namespace.yaml
-  - ./stackgres/ks.yaml
+  # - ./stackgres/ks.yaml
