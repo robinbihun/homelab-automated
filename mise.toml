@@ -26,7 +26,7 @@ age = "1.2"
 # Talos Management
 talos = "1.11"
 talhelper = "3.0"
-"aqua:cli/cli" = "2.83"
+"aqua:cli/cli" = "2.85.0"
 
 # Kubernetes Tools
 k9s = "0.50"
