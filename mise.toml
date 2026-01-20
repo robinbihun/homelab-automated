@@ -1,12 +1,12 @@
 [tools]
 # Repository Management
 pkl = "0.30"
-hk = "1.29.0"
+hk = "1.32.0"
 prettier = "3.7"
 ruff = "0.14"
 shellcheck = "0.11"
 yamllint = "1.38.0"
-typos = "1.42.0"
+typos = "1.42.1"
 task = "3.45"
 
 # Scripting
@@ -25,7 +25,7 @@ age = "1.2"
 
 # Talos Management
 talos = "1.11"
-talhelper = "3.1.1"
+talhelper = "3.1.2"
 "aqua:cli/cli" = "2.85.0"
 
 # Kubernetes Tools
