@@ -24,7 +24,17 @@ spec:
           "allowPlugins": "false",
           "allowScripts": "false",
           "autodiscover": "true",
-          "platform": "github"
+          "platform": "github",
+          "extends": [
+            ":configMigration",
+            ":ignoreModulesAndTests",
+            "group:recommended",
+            "group:allNonMajor",
+            "helpers:githubDigestChangelogs",
+            "helpers:goXPackagesChangelogLink",
+            "helpers:goXPackagesNameLink",
+            "workarounds:all"
+          ]
         }
     envFrom:
       - secretRef:

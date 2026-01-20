@@ -25,7 +25,17 @@ spec:
           "allowScripts": "false",
           "autodiscover": "true",
           "platform": "forgejo",
-          "endpoint": "https://code.${SECRET_DOMAIN}/"
+          "endpoint": "https://code.${SECRET_DOMAIN}/",
+          "extends": [
+            ":configMigration",
+            ":ignoreModulesAndTests",
+            "group:recommended",
+            "group:allNonMajor",
+            "helpers:githubDigestChangelogs",
+            "helpers:goXPackagesChangelogLink",
+            "helpers:goXPackagesNameLink",
+            "workarounds:all"
+          ]
         }
     envFrom:
       - secretRef:
