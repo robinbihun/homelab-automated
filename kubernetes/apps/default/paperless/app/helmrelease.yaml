@@ -24,7 +24,7 @@ spec:
           app:
             image:
               repository: ghcr.io/paperless-ngx/paperless-ngx
-              tag: 2.20.5
+              tag: 2.20.7
             env:
               PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
               PAPERLESS_URL: https://paperless.${SECRET_DOMAIN}
@@ -82,7 +82,7 @@ spec:
       data:
         type: nfs
         server: ${NFS_HOST}
-        path: /mnt/storage/media
+        path: /mnt/Storage/Media
         advancedMounts:
           paperless:
             app:
@@ -91,7 +91,7 @@ spec:
       nas:
         type: nfs
         server: ${NFS_HOST}
-        path: /mnt/storage/files/apps/default
+        path: /mnt/Storage/Files/k8s/apps/default
         advancedMounts:
           paperless:
             app:
