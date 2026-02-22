@@ -38,7 +38,7 @@ spec:
     #       type: persistentVolumeClaim
     #       accessMode: ReadWriteOnce
 
-    # immich:
-    #   persistence:
-    #     library:
-    #       existingClaim: immich-nfs-pvc
+    immich:
+      persistence:
+        library:
+          existingClaim: immich-nfs-pvc
