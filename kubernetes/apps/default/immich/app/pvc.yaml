@@ -11,7 +11,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   storageClassName: nfs-immich
   nfs:
-    path: "/mnt/storage/files/apps/default/immich"
+    path: "/mnt/Storage/Files/k8s/apps/default/immich"
     server: ${NFS_HOST}
 ---
 apiVersion: v1
