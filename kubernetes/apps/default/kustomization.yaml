@@ -15,7 +15,6 @@ resources:
   - ./renovate/ks.yaml
   - ./nebula-sync/ks.yaml
   - ./bentopdf/ks.yaml
-  - ./paperless/ks.yaml
   - ./immich/ks.yaml
   - ./harbor/ks.yaml
   - ./dozzle/ks.yaml

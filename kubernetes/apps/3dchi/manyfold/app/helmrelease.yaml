@@ -77,7 +77,7 @@ spec:
       library:
         type: nfs
         server: ${NFS_HOST}
-        path: /mnt/storage/files/apps/3dchi
+        path: /mnt/Storage/Files/k8s/apps/3dchi
         advancedMounts:
           manyfold:
             app:
