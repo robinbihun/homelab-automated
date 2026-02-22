@@ -84,7 +84,7 @@ spec:
       media:
         type: nfs
         server: ${NFS_HOST}
-        path: /mnt/storage/media
+        path: /mnt/Storage/Media
         globalMounts:
           - path: /data
       tmp:
