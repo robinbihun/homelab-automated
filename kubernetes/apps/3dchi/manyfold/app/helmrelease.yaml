@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/manyfold3d/manyfold-solo
-              tag: 0.131.0
+              tag: 0.132.1
             env:
               TZ: "America/Chicago"
 
