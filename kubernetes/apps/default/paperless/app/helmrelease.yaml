@@ -34,9 +34,9 @@ spec:
               PAPERLESS_ACCOUNT_ALLOW_SIGNUPS: "false"
               PAPERLESS_SOCIALACCOUNT_ALLOW_SIGNUPS: "true"
               PAPERLESS_CONSUMPTION_DIR: /data/nas/consume
-              PAPERLESS_DATA_DIR: /data/local/data
+              PAPERLESS_DATA_DIR: /data/local
               PAPERLESS_EXPORT_DIR: /data/nas/export
-              PAPERLESS_MEDIA_ROOT: /data/local/media
+              PAPERLESS_MEDIA_ROOT: /data/nas/media
               PAPERLESS_CONSUMER_POLLING: "60"
               PAPERLESS_CONSUMER_RECURSIVE: "true"
               PAPERLESS_CONSUMER_SUBDIRS_AS_TAGS: "true"
@@ -80,14 +80,9 @@ spec:
 
     persistence:
       data:
-        type: nfs
-        server: ${NFS_HOST}
-        path: /mnt/Storage/Media
-        advancedMounts:
-          paperless:
-            app:
-              - subPath: paperless
-                path: /data/local
+        existingClaim: paperless-pvc
+        globalMounts:
+          - path: /data/local
       nas:
         type: nfs
         server: ${NFS_HOST}
