@@ -18,4 +18,5 @@ resources:
   - ./immich/ks.yaml
   - ./harbor/ks.yaml
   - ./dozzle/ks.yaml
+  - ./gocd/ks.yaml
   
