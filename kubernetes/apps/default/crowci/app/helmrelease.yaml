@@ -1,0 +1,39 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: crowci
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: crowci
+  interval: 1h
+  values:
+    server:
+      env:
+        CROW_HOST: "https://build.${SECRET_DOMAIN}"
+        CROW_OPEN: "true"
+
+        CROW_FORGES: "local"
+        CROW_FORGE_LOCAL_TYPE: "forgejo"
+        CROW_FORGE_LOCAL_ICON: "forgejo"
+        CROW_FORGE_LOCAL_URL: "http://forgejo-http.default.svc.cluster.local:3000"
+        CROW_FORGE_LOCAL_SKIP_VERIFY: "true"
+        CROW_FORGE_LOCAL_OAUTH_HOST: "https://code.${SECRET_DOMAIN}"
+
+        CROW_BACKEND_K8S_VOLUME_SIZE: "250Mi"
+
+      extraSecretNamesForEnvFrom:
+        - crowci-forgejo-secrets
+        - crowci-admin-secrets
+
+      metrics:
+        enabled: true
+
+    prometheus:
+      podmonitor:
+        enabled: true
+        interval: 60s
+    grafana:
+      dashboards:
+        enabled: true

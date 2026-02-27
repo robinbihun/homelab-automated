@@ -10,13 +10,14 @@ components:
 resources:
   - ./keycloak/ks.yaml
   - ./forgejo/ks.yaml
-  - ./forgejo-runner/ks.yaml
+  # - ./forgejo-runner/ks.yaml
   - ./forgejo-renovate/ks.yaml
   - ./renovate/ks.yaml
   - ./nebula-sync/ks.yaml
   - ./bentopdf/ks.yaml
   - ./immich/ks.yaml
-  - ./harbor/ks.yaml
+  # - ./harbor/ks.yaml
   - ./dozzle/ks.yaml
-  - ./gocd/ks.yaml
+  # - ./gocd/ks.yaml
+  - ./crowci/ks.yaml
   
