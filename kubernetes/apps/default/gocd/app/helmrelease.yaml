@@ -26,3 +26,16 @@ spec:
     service:
       type: "NodePort"
       httpPort: 8153
+    server:
+      env:
+        extraEnvVars:
+          - name: GOCD_PLUGIN_INSTALL_kubernetes-elastic-agents
+            value: https://github.com/gocd/kubernetes-elastic-agents/releases/download/v5.0.1-738/kubernetes-elastic-agent-5.0.1-738.jar
+          - name: GOCD_PLUGIN_INSTALL_docker-registry-artifact-plugin
+            value: https://github.com/gocd/docker-registry-artifact-plugin/releases/download/v2.0.0-947/docker-registry-artifact-plugin-2.0.0-947.jar
+          - name: GOCD_PLUGIN_INSTALL_gocd-git-path-material-plugin
+            value: https://github.com/TWChennai/gocd-git-path-material-plugin/releases/download/v3.0.0-646/gocd-git-path-material-plugin-3.0.0-646.jar
+          - name: GOCD_PLUGIN_INSTALL_script-executor-task
+            value: https://github.com/gocd-contrib/script-executor-task/releases/download/v2.0.0-348/script-executor-2.0.0-348.jar
+          - name: GOCD_PLUGIN_INSTALL_keycloak-oauth-authorization-plugin
+            value: https://github.com/youngjun-99/gocd-keycloak-oauth-authorization-plugin/releases/download/v3.0.0/keycloak-oauth-authorization-plugin-3.0.0.jar
