@@ -17,9 +17,7 @@ spec:
         CROW_FORGES: "local"
         CROW_FORGE_LOCAL_TYPE: "forgejo"
         CROW_FORGE_LOCAL_ICON: "forgejo"
-        CROW_FORGE_LOCAL_URL: "http://forgejo-http.default.svc.cluster.local:3000"
-        CROW_FORGE_LOCAL_SKIP_VERIFY: "true"
-        CROW_FORGE_LOCAL_OAUTH_HOST: "https://code.${SECRET_DOMAIN}"
+        CROW_FORGE_LOCAL_URL: "https://code.${SECRET_DOMAIN}"
 
         CROW_BACKEND_K8S_VOLUME_SIZE: "250Mi"
 

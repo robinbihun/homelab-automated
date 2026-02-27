@@ -19,5 +19,5 @@ resources:
   # - ./harbor/ks.yaml
   - ./dozzle/ks.yaml
   # - ./gocd/ks.yaml
-  - ./crowci/ks.yaml
+  # - ./crowci/ks.yaml
   
