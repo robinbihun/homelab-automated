@@ -28,6 +28,7 @@ spec:
           "extends": [
             ":configMigration",
             ":ignoreModulesAndTests",
+            ":dependencyDashboard",
             "group:recommended",
             "group:allNonMajor",
             "helpers:githubDigestChangelogs",
