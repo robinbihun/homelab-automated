@@ -9,8 +9,14 @@ spec:
     name: crowci
   interval: 1h
   values:
+    agent:
+      env:
+        CROW_BACKEND_K8S_STORAGE_CLASS: "ceph-filesystem"
+        CROW_BACKEND_K8S_VOLUME_SIZE: "1Gi"
+        
     server:
       env:
+        CROW_ADMIN: "rbihun"
         CROW_HOST: "https://build.${SECRET_DOMAIN}"
         CROW_OPEN: "true"
 
@@ -19,11 +25,8 @@ spec:
         CROW_FORGE_LOCAL_ICON: "forgejo"
         CROW_FORGE_LOCAL_URL: "https://code.${SECRET_DOMAIN}"
 
-        CROW_BACKEND_K8S_VOLUME_SIZE: "250Mi"
-
       extraSecretNamesForEnvFrom:
         - crowci-forgejo-secrets
-        - crowci-admin-secrets
 
       metrics:
         enabled: true
