@@ -1,0 +1,31 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: capacitor-next
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: capacitor-next
+  interval: 1h
+  values:
+    service:
+      port: 80
+    env:
+      # ## OIDC Authentication
+      # ## With per-user defined RBAC.
+      # ## Read https://gimlet.io/capacitor-next/docs/#authorization:per-user-rbac for more information.
+      # ##
+      # AUTH: oidc
+      # AUTH_DEBUG: "true" #logs impersonation headers
+      # OIDC_ISSUER: "https://your-oidc-provider.com"
+      # OIDC_CLIENT_ID: "capacitor"
+      # OIDC_CLIENT_SECRET: "your-client-secret"
+      # OIDC_REDIRECT_URL: "https://capacitor.example.com/auth/callback"
+      # AUTHORIZED_EMAILS: "*@yourcompany.com"
+      
+      AUTH: noauth
+      AUTH_DEBUG: "true" #logs impersonation headers
+      IMPERSONATE_SA_RULES: "noauth=flux-system:capacitor-next-preset-clusteradmin"
+    existingSecret:
+      name: capacitor-next
