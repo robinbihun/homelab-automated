@@ -25,6 +25,8 @@ spec:
         CROW_FORGE_LOCAL_ICON: "forgejo"
         CROW_FORGE_LOCAL_URL: "https://code.${SECRET_DOMAIN}"
 
+        CROW_PLUGINS_PRIVILEGED: "codefloe.com/crow-plugins/docker-buildx"
+
       extraSecretNamesForEnvFrom:
         - crowci-forgejo-secrets
 
