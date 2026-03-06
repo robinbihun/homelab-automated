@@ -10,7 +10,6 @@ components:
 resources:
   - ./keycloak/ks.yaml
   - ./forgejo/ks.yaml
-  # - ./forgejo-runner/ks.yaml
   - ./forgejo-renovate/ks.yaml
   - ./renovate/ks.yaml
   - ./nebula-sync/ks.yaml
@@ -18,6 +17,5 @@ resources:
   - ./immich/ks.yaml
   # - ./harbor/ks.yaml
   - ./dozzle/ks.yaml
-  # - ./gocd/ks.yaml
   - ./crowci/ks.yaml
   

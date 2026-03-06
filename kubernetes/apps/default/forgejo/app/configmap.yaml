@@ -22,3 +22,7 @@ data:
   service: |
     DISABLE_REGISTRATION=false
     SHOW_REGISTRATION_BUTTON=false
+  webhook: |
+    ALLOWED_HOST_LIST=*
+  actions: |
+    ENABLED=false
