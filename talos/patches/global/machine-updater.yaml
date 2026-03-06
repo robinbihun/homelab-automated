@@ -1,5 +1,7 @@
 machine:
   features:
+    rbac: true
+    apidCheckExtKeyUsage: true
     kubernetesTalosAPIAccess:
       allowedKubernetesNamespaces:
         - system-upgrade
