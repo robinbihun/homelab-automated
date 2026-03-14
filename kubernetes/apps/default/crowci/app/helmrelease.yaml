@@ -10,11 +10,15 @@ spec:
   interval: 1h
   values:
     agent:
+      mapAgentSecret: false
       env:
         CROW_BACKEND_K8S_STORAGE_CLASS: "ceph-filesystem"
         CROW_BACKEND_K8S_VOLUME_SIZE: "1Gi"
-        
+      extraSecretNamesForEnvFrom:
+        - crowci-default-agent-secret
+
     server:
+      createAgentSecret: false
       env:
         CROW_ADMIN: "rbihun"
         CROW_HOST: "https://build.${SECRET_DOMAIN}"
@@ -28,6 +32,7 @@ spec:
         CROW_PLUGINS_PRIVILEGED: "codefloe.com/crow-plugins/docker-buildx"
 
       extraSecretNamesForEnvFrom:
+        - crowci-default-agent-secret
         - crowci-forgejo-secrets
 
       metrics:
