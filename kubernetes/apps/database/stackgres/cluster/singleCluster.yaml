@@ -5,14 +5,10 @@ metadata:
   name: default-pgsql
   namespace: database
 spec:
+  instances: 1
   postgres:
     version: 'latest'
-    extensions:
-      - name: 'vchord'
-  instances: 1
   pods:
     persistentVolume: 
       size: '5Gi'
-  configurations:
-    observability:
-      prometheusAutobind: true
+

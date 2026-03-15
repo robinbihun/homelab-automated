@@ -25,5 +25,9 @@ spec:
       operator: true
       restapi: true
       collector: false
+    adminui:
+      service:
+        exposeHTTP: true
     authentication:
       user: admin
+      password: thisisatest

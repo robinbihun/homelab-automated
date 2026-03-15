@@ -14,4 +14,4 @@ spec:
   rules:
     - backendRefs:
         - name: stackgres-restapi
-          port: 443
+          port: 80
