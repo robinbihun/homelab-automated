@@ -21,5 +21,9 @@ spec:
     remediation:
       retries: 3
   values:
+    deploy:
+      operator: true
+      restapi: true
+      collector: false
     authentication:
       user: admin
