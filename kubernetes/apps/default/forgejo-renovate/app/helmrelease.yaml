@@ -25,6 +25,7 @@ spec:
           "allowScripts": "false",
           "autodiscover": "true",
           "platform": "forgejo",
+          "username": "bihun-bot",
           "endpoint": "https://code.${SECRET_DOMAIN}/",
           "extends": [
             ":configMigration",
