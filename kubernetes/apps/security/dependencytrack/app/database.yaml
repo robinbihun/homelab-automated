@@ -1,0 +1,73 @@
+---
+apiVersion: stackgres.io/v1
+kind: SGCluster
+metadata:
+  name: dtrack-db
+spec:
+  instances: 1
+  postgres:
+    version: '18'
+  pods:
+    persistentVolume:
+      size: '5Gi'
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dtrack-db-init
+spec:
+  backoffLimit: 10
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        - name: wait-for-db
+          image: postgres:18
+          command:
+            - /bin/sh
+            - -c
+            - until psql -h dtrack-db.security.svc.cluster.local -U postgres -c "SELECT 1" > /dev/null 2>&1; do echo "waiting for dtrack-db to be fully initialized"; sleep 10; done 
+          env:
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: dtrack-db
+                  key: superuser-username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dtrack-db
+                  key: superuser-password
+      containers:
+        - name: init
+          image: postgres:18
+          command:
+            - psql
+            - -h
+            - dtrack-db.security.svc.cluster.local
+            - -U
+            - postgres
+            - -f
+            - /scripts/init.sql
+          env:
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: dtrack-db
+                  key: superuser-username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: dtrack-db
+                  key: superuser-password
+          volumeMounts:
+            - name: init-sql
+              mountPath: /scripts
+      volumes:
+        - name: init-sql
+          secret:
+            secretName: dtrack-secrets
+            items:
+              - key: db-init-sql
+                path: init.sql
