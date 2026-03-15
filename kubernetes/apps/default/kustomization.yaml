@@ -8,13 +8,12 @@ components:
   - ../../components/repos/app-template
 
 resources:
-  - ./keycloak/ks.yaml
+  - ./bentopdf/ks.yaml
+  - ./crowci/ks.yaml
   - ./forgejo/ks.yaml
   - ./forgejo-renovate/ks.yaml
-  - ./renovate/ks.yaml
-  - ./nebula-sync/ks.yaml
-  - ./bentopdf/ks.yaml
   - ./immich/ks.yaml
-  - ./dozzle/ks.yaml
-  - ./crowci/ks.yaml
+  - ./keycloak/ks.yaml
+  - ./nebula-sync/ks.yaml
+  - ./renovate/ks.yaml
   
