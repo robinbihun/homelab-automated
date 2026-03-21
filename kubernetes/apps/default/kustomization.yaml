@@ -8,7 +8,6 @@ components:
   - ../../components/repos/app-template
 
 resources:
-  # - ./bentopdf/ks.yaml
   - ./crowci/ks.yaml
   - ./forgejo/ks.yaml
   - ./forgejo-renovate/ks.yaml
