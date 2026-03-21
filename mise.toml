@@ -3,7 +3,7 @@
 pkl = "0.31.0"
 hk = "1.38.0"
 prettier = "3.7"
-ruff = "0.15.6"
+ruff = "0.15.7"
 shellcheck = "0.11"
 yamllint = "1.38.0"
 typos = "1.44.0"
@@ -16,7 +16,7 @@ yq = "4.52.4"
 cue = "0.15"
 
 # Template Rendering
-pipx = "1.10.0"
+pipx = "1.10.1"
 'pipx:makejinja' = "2.8.2"
 
 # Encryption Tools
@@ -25,12 +25,12 @@ age = "1.2"
 
 # Talos Management
 talos = "1.11"
-talhelper = "3.1.6"
+talhelper = "3.1.7"
 "aqua:cli/cli" = "2.88.1"
 
 # Kubernetes Tools
 k9s = "0.50"
-kubectl = "1.35.2"
+kubectl = "1.35.3"
 kustomize = "5.8"
 kubeconform = "0.7.0"
 helm = "4.1.3"
