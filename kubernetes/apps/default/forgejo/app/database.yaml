@@ -9,7 +9,7 @@ spec:
     version: '18'
   pods:
     persistentVolume:
-      size: '5Gi'
+      size: '2Gi'
 ---
 apiVersion: batch/v1
 kind: Job

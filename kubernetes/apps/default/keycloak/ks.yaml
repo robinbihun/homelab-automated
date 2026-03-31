@@ -16,9 +16,6 @@ spec:
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
-  dependsOn:
-    - name: external-secrets-infisical
-      namespace: external-secrets
   prune: true
   sourceRef:
     kind: GitRepository
