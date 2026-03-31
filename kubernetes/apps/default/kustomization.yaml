@@ -11,8 +11,7 @@ resources:
   - ./crowci/ks.yaml
   - ./forgejo/ks.yaml
   - ./forgejo-renovate/ks.yaml
-  - ./immich/ks.yaml
+  # - ./immich/ks.yaml
   - ./keycloak/ks.yaml
   - ./nebula-sync/ks.yaml
   - ./renovate/ks.yaml
-  

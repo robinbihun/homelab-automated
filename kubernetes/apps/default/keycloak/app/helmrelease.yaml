@@ -22,7 +22,7 @@ spec:
 
     database:
       type: "postgres"
-      host: "${PGSQL_HOST}"
+      host: "keycloak-db.default.svc.cluster.local"
       port: "5432"
       name: "keycloak"
       existingSecret: keycloak-db-secret

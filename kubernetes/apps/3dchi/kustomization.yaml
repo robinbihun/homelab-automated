@@ -9,4 +9,4 @@ components:
 
 resources:
   - ./namespace.yaml
-  - ./spoolman/ks.yaml
+  # - ./spoolman/ks.yaml

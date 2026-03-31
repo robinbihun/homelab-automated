@@ -17,8 +17,7 @@ data:
     OFFLINE_MODE=false
   database: |
     DB_TYPE=postgres
-    HOST=${PGSQL_HOST}:5432
-    NAME=forgejo
+    HOST=forgejo-db.default.svc.cluster.local:5432
   service: |
     DISABLE_REGISTRATION=false
     SHOW_REGISTRATION_BUTTON=false

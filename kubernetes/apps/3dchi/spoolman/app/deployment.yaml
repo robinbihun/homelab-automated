@@ -29,18 +29,21 @@ spec:
             - name: SPOOLMAN_PORT
               value: "7912"
             - name: SPOOLMAN_DB_HOST
-              value: ${PGSQL_HOST}
+              value: spoolman-db.3dchi.svc.cluster.local
             - name: SPOOLMAN_DB_PORT
               value: "5432"
             - name: SPOOLMAN_DB_NAME
               value: spoolman
             - name: SPOOLMAN_DB_USERNAME
-              value: spoolman
+              valueFrom:
+                secretKeyRef:
+                  name: spoolman-db-secret
+                  key: db-username
             - name: SPOOLMAN_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: spoolman-postgres-secret
-                  key: password
+                  name: spoolman-db-secret
+                  key: db-password
           ports:
             - containerPort: 7912
               protocol: TCP
