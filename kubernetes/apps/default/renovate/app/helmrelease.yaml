@@ -12,7 +12,7 @@ spec:
     image:
       registry: ghcr.io
       repository: renovatebot/renovate
-      tag: 43.84.1
+      tag: 43.104.1
     cronjob:
       schedule: "0 1 * * *"
       concurrencyPolicy: Forbid
