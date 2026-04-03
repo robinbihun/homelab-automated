@@ -36,6 +36,8 @@ A Kubernetes cluster deployed with [Talos Linux](https://github.com/siderolabs/t
 > | [Control/Worker](https://www.amazon.com/gp/product/B0C339KVH9) | 4 | [32GB](https://www.amazon.com/gp/product/B09RVNMGFH) | [2TB SSD/NVMe](https://www.amazon.com/gp/product/B0B25ML2FH) (sda) |
 > | [Control/Worker](https://www.amazon.com/gp/product/B0C339KVH9) | 4 | [32GB](https://www.amazon.com/gp/product/B09RVNMGFH) | [2TB SSD/NVMe](https://www.amazon.com/gp/product/B0B25ML2FH) (sda) |
 > | [Control/Worker](https://www.amazon.com/gp/product/B0C339KVH9) | 4 | [32GB](https://www.amazon.com/gp/product/B09RVNMGFH) | [2TB SSD/NVMe](https://www.amazon.com/gp/product/B0B25ML2FH) (sda) |
+> | [Worker](https://store.minisforum.com/products/minisforum-ms-a2-workstation?variant=47590282297589) | 16 | 32GB | 1TB SSD/NVMe (sda) |
+> | [Worker](https://www.amazon.com/gp/product/B0C339KVH9) | 16 | 32GB | 1TB SSD/NVMe (sda) |
 
 1. Head over to the [Talos Linux Image Factory](https://factory.talos.dev) and follow the instructions. Be sure to only choose the **bare-minimum system extensions** as some might require additional configuration and prevent Talos from booting without it. Depending on your CPU start with the Intel/AMD system extensions (`i915`, `intel-ucode` & `mei` **or** `amdgpu` & `amd-ucode`), you can always add system extensions after Talos is installed and working.
 

@@ -133,6 +133,12 @@ spec:
           - name: "k8s-03"
             devices:
               - name: "/dev/disk/by-id/nvme-CT2000P3PSSD8_2424E8B841D7"
+          - name: "k8s-04" 
+            devices:
+              - name: "/dev/disk/by-id/nvme-KINGSTON_OM8TAP41024K1-A00_50026B73843C1983"
+          - name: "k8s-05" 
+            devices:
+              - name: "/dev/disk/by-id/nvme-KINGSTON_OM8TAP41024K1-A00_50026B73843CDB9A"
 
     cephBlockPools:
       - name: ceph-blockpool

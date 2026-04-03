@@ -58,6 +58,32 @@ nodes:
         dhcp: true
         vip:
           ip: "10.10.10.30"
+  - hostname: "k8s-04"
+    ipAddress: "10.10.10.34"
+    installDisk: "/dev/nvme0n1"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/8b690dfa8f9cebd7208a3f2f728f06377b5f468334f480485ad3f77d0cbf107d
+    controlPlane: false
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "38:05:25:36:b0:b1"
+        dhcp: true
+    nodeLabels:
+      node-type: compute
+  - hostname: "k8s-05"
+    ipAddress: "10.10.10.35"
+    installDisk: "/dev/nvme1n1"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/8b690dfa8f9cebd7208a3f2f728f06377b5f468334f480485ad3f77d0cbf107d
+    controlPlane: false
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "38:05:25:36:b2:cd"
+        dhcp: true
+    nodeLabels:
+      node-type: compute
 
 # Global patches
 patches:
@@ -66,9 +92,9 @@ patches:
   - "@./patches/global/machine-network.yaml"
   - "@./patches/global/machine-sysctls.yaml"
   - "@./patches/global/machine-time.yaml"
-  - "@./patches/global/machine-updater.yaml"
 
 # Controller patches
 controlPlane:
   patches:
     - "@./patches/controller/cluster.yaml"
+    - "@./patches/controller/machine-updater.yaml"
