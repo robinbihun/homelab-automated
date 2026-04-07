@@ -19,6 +19,19 @@ spec:
       hostname: auth.${SECRET_DOMAIN}
       production: true
       proxyHeaders: "xforwarded"
+    
+    extraInitContainers:
+      - name: custom-themes
+        image: code.bihun.dev/bihun/keycloak-customizations:latest-rc
+        imagePullPolicy: Always
+        command:
+          - sh
+          - -c
+          - |
+            cp -r /themes/* /opt/keycloak/themes/
+        volumeMounts:
+          - name: keycloak-themes
+            mountPath: /opt/keycloak/themes
 
     database:
       type: "postgres"
