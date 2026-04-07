@@ -20,6 +20,10 @@ spec:
       production: true
       proxyHeaders: "xforwarded"
     
+    global:
+      imagePullSecrets:
+        - name: forgejo-pull-secrets
+
     extraInitContainers:
       - name: custom-themes
         image: code.bihun.dev/bihun/keycloak-customizations:latest-rc
