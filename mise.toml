@@ -39,7 +39,7 @@ cilium-cli = "0.19.4"
 flux2 = "2.8.8"
 
 # Cloudflare Tools
-cloudflared = "2025.11.1"
+cloudflared = "2026.5.0"
 
 [env]
 _.python.venv = { path = "{{config_root}}/.venv", create = true }
