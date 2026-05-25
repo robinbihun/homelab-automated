@@ -25,7 +25,7 @@ spec:
           init-config:
             image:
               repository: ghcr.io/kiwigrid/k8s-sidecar
-              tag: 2.7.1
+              tag: 2.7.3
             env:
               FOLDER: /config
               LABEL: gatus.io/enabled
@@ -43,7 +43,7 @@ spec:
           app:
             image:
               repository: ghcr.io/twin/gatus
-              tag: v5.35.0
+              tag: v5.36.0
             env:
               GATUS_CONFIG_PATH: /config
               GATUS_DELAY_START_SECONDS: 5
