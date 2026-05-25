@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: ghcr.io/lovelaze/nebula-sync
-              tag: v0.11.1
+              tag: v0.11.2
             env:
               FULL_SYNC: true
               RUN_GRAVITY: true
