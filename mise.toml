@@ -29,8 +29,8 @@ talhelper = "3.1.11"
 "aqua:cli/cli" = "2.95.0"
 
 # Kubernetes Tools
-k9s = "0.51.0"
-kubectl = "1.36.2"
+k9s = "0.50"
+kubectl = "latest"
 kustomize = "5.8"
 kubeconform = "0.8.0"
 helm = "4.2.2"
