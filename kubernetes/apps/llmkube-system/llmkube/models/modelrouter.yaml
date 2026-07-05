@@ -5,9 +5,9 @@ metadata:
   name: llmrouter
 spec:
   backends:
-    - name: tinyllama
+    - name: qwen3-5-27b
       inferenceServiceRef:
-        name: tinyllama
-  defaultRoute: tinyllama
+        name: qwen3-5-27b
+  defaultRoute: qwen3-5-27b
   proxy:
     image: ghcr.io/defilantech/llmkube-router-proxy:0.9.0

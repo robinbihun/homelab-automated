@@ -1,0 +1,22 @@
+---
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: Model
+metadata:
+  name: qwen3-5-27b
+spec:
+  source: https://huggingface.co/unsloth/Qwen3.5-27B-GGUF/resolve/main/Qwen3.5-27B-Q4_K_M.gguf
+  format: gguf
+---
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: InferenceService
+metadata:
+  name: qwen3-5-27b
+spec:
+  modelRef: qwen3-5-27b
+  replicas: 1
+  contextSize: 8192
+  nodeSelector:
+    node-type: compute
+  resources:
+    cpu: "8"
+    memory: "20Gi"
