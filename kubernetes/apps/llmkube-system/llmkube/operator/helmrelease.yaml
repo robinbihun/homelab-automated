@@ -25,3 +25,7 @@ spec:
       retries: 3
   uninstall:
     keepHistory: false
+  values:
+    modelCache:
+      storageClass: ceph-filesystem
+      accessMode: ReadWriteMany
