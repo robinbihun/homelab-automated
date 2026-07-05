@@ -5,9 +5,28 @@ metadata:
   name: llmrouter
 spec:
   backends:
-    - name: qwen3-5-27b
+    - name: gpt-oss-20b
+      tier: local
+      capabilities: ["tools"]
       inferenceServiceRef:
-        name: qwen3-5-27b
-  defaultRoute: qwen3-5-27b
+        name: gpt-oss-20b
+    - name: claude
+      tier: cloud
+      capabilities: ["tools", "long-context"]
+      external:
+        provider: anthropic
+        model: claude-opus-4-8
+        credentialsSecretRef:
+          name: anthropic-credentials
+  rules:
+    - name: complex-to-claude
+      match:
+        taskComplexity: complex
+      route:
+        backends: ["claude"]
+        strategy: primary-fallback
+      timeout: 120s
+  defaultRoute: gpt-oss-20b
+  defaultRouteStrategy: BackendNameMatch
   proxy:
     image: ghcr.io/defilantech/llmkube-router-proxy:0.9.0
