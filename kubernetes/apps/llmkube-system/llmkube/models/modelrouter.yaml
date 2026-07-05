@@ -1,0 +1,13 @@
+---
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: ModelRouter
+metadata:
+  name: llmrouter
+spec:
+  backends:
+    - name: tinyllama
+      inferenceServiceRef:
+        name: tinyllama
+  defaultRoute: tinyllama
+  proxy:
+    image: ghcr.io/defilantech/llmkube-router-proxy:0.9.0
