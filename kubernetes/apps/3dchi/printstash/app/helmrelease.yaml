@@ -65,6 +65,16 @@ spec:
               VAULT_MAX_UPLOAD_MB: "512"
               VAULT_OIDC_ENABLED: "true"
               VAULT_OIDC_ISSUER_URL: https://auth.${SECRET_DOMAIN}/realms/development-services
+              # PrintStash's own default requests "openid profile email
+              # groups", but "groups" isn't a Keycloak client scope here (our
+              # tofu config attaches the group-membership mapper directly to
+              # the client as a dedicated mapper, not to a scope named
+              # "groups") — requesting an unrecognized scope makes Keycloak's
+              # authorization endpoint hard-reject the whole request
+              # (invalid_request: "Invalid scopes"). Dedicated client mappers
+              # apply regardless of requested scope, so dropping "groups"
+              # here still yields the groups claim.
+              VAULT_OIDC_SCOPES: openid profile email
               VAULT_OIDC_CLIENT_ID: printstash
               VAULT_OIDC_CLIENT_SECRET:
                 valueFrom:
@@ -85,6 +95,16 @@ spec:
               # the cluster), so trusting forwarded headers from any peer here
               # is safe.
               FORWARDED_ALLOW_IPS: "*"
+            # Liveness/readiness are more tolerant than the usual defaults:
+            # the /api/v1/ingest/jobs endpoint is a sync (blocking) handler
+            # that the frontend polls every 1s without an in-flight guard
+            # (its own setInterval fires regardless of whether the previous
+            # poll finished), so overlapping calls can saturate Starlette's
+            # sync threadpool. When that happens, even this dependency-free
+            # /api/v1/health check can't get scheduled in time. That's an
+            # upstream app issue we can't fix from the manifest, but giving
+            # the probes more slack avoids Kubernetes restarting the pod
+            # mid-storm — it drains and recovers on its own if left alone.
             probes:
               liveness:
                 enabled: true
@@ -95,8 +115,8 @@ spec:
                     port: 8000
                   initialDelaySeconds: 10
                   periodSeconds: 30
-                  timeoutSeconds: 5
-                  failureThreshold: 3
+                  timeoutSeconds: 10
+                  failureThreshold: 8
               readiness:
                 enabled: true
                 custom: true
@@ -106,8 +126,8 @@ spec:
                     port: 8000
                   initialDelaySeconds: 5
                   periodSeconds: 15
-                  timeoutSeconds: 5
-                  failureThreshold: 3
+                  timeoutSeconds: 10
+                  failureThreshold: 6
               startup:
                 enabled: true
                 custom: true
