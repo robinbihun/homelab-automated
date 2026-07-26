@@ -186,6 +186,17 @@ spec:
                 port: 3000
 
     persistence:
+      # The image bakes /tmp/.uv_cache at build time owned by uid 10001 (its
+      # own baked-in user). Since we run as uid 1000 (see pod securityContext
+      # above), that directory isn't writable — shadow it with a fresh
+      # emptyDir, which kubelet chowns to fsGroup regardless of what the
+      # image baked in.
+      uv-cache:
+        type: emptyDir
+        advancedMounts:
+          api:
+            api:
+              - path: /tmp/.uv_cache
       # Local (ceph-block) volume for thumbnails, staging, and the db dir
       # (entrypoint marker + auto-generated VAULT_SECRETS_KEY). See pvc.yaml
       # for why these stay off NFS.
