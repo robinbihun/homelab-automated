@@ -20,18 +20,29 @@ spec:
   values:
     controllers:
       api:
+        pod:
+          # The NAS's NFS export root_squashes to uid 1000 / gid 3000 (verified
+          # live: root gets mapped down to that identity, and the exported
+          # /files and /backups dirs are owned 1000:3000 with no group/other
+          # write bit). The image's entrypoint normally starts as root and
+          # self-chowns /data/* to uid 10001, but chown-ing an NFS path you
+          # don't already own fails under root_squash regardless of client
+          # privilege — CAP_CHOWN isn't honored across the wire. Running the
+          # container as 1000:3000 from the start skips that entrypoint
+          # chown branch entirely (id -u != 0) and matches the NFS owner
+          # directly. fsGroup covers the ceph-block PVC (thumbs/staging/db),
+          # which a fresh RBD volume otherwise mounts root-owned.
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 3000
+            runAsNonRoot: true
+            fsGroup: 3000
+            fsGroupChangePolicy: OnRootMismatch
         containers:
           api:
             image:
               repository: ghcr.io/xiao-villamor/printstash-api
               tag: 0.11.1
-            # No restrictive securityContext here on purpose: the image's
-            # entrypoint starts as root, does a one-time recursive chown of
-            # /data/* to uid/gid 10001 (guarded by a marker file so it only
-            # runs once), then drops privileges via gosu before exec'ing
-            # uvicorn. Dropping capabilities/forcing a non-root UID here would
-            # break that self-healing chown on first boot, particularly over
-            # the NFS-backed volumes.
             env:
               TZ: America/Chicago
               VAULT_STORAGE_BACKEND: local
