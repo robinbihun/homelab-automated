@@ -1,0 +1,21 @@
+---
+# Local (ceph-block) storage for data that shouldn't live on NFS:
+# - thumbs: derived/regenerable cache, benefits from fast local block storage
+# - staging: in-flight uploads; PrintStash's own docs note NFS can't reliably
+#   deliver the filesystem semantics staging needs
+# - db: not the actual database (that's Postgres), but holds the entrypoint's
+#   one-time-chown marker and the auto-generated VAULT_SECRETS_KEY file, which
+#   must persist across restarts
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: printstash
+  labels:
+    app: printstash
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-block
+  resources:
+    requests:
+      storage: 10Gi

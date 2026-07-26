@@ -10,3 +10,4 @@ components:
 resources:
   - ./namespace.yaml
   - ./spoolman/ks.yaml
+  - ./printstash/ks.yaml
