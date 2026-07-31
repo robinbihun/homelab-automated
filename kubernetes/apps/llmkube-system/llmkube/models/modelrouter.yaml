@@ -5,11 +5,12 @@ metadata:
   name: llmrouter
 spec:
   backends:
-    - name: gpt-oss-20b
+    - name: qwen36-27b
       tier: local
       capabilities: ["tools"]
       inferenceServiceRef:
-        name: gpt-oss-20b
+        name: qwen36-27b
+      timeout: 600s
     - name: claude
       tier: cloud
       capabilities: ["tools", "long-context"]
@@ -26,7 +27,8 @@ spec:
         backends: ["claude"]
         strategy: primary-fallback
       timeout: 120s
-  defaultRoute: gpt-oss-20b
-  defaultRouteStrategy: BackendNameMatch
+  defaultRoute: qwen36-27b
+  defaultRouteStrategy: Static
   proxy:
     image: ghcr.io/defilantech/llmkube-router-proxy:0.9.0
+    responseHeaderTimeout: 600s
