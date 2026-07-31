@@ -1,0 +1,26 @@
+---
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: Model
+metadata:
+  name: qwen36-27b
+spec:
+  source: https://huggingface.co/unsloth/Qwen3.6-27B-GGUF/resolve/main/Qwen3.6-27B-Q4_K_M.gguf
+  format: gguf
+---
+apiVersion: inference.llmkube.dev/v1alpha1
+kind: InferenceService
+metadata:
+  name: qwen36-27b
+spec:
+  modelRef: qwen36-27b
+  runtime: llamacpp
+  replicas: 1
+  contextSize: 32768
+  flashAttention: true
+  cacheTypeK: q8_0
+  cacheTypeV: q8_0
+  nodeSelector:
+    node-type: compute
+  resources:
+    cpu: "16"
+    memory: "19Gi"
