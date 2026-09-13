@@ -47,20 +47,18 @@ spec:
                 port: 8443
 
     cephClusterSpec:
-      # CVE-2025-30156: cephx keys used the legacy "aes" cipher, which 20.2.4
-      # flags as insecure. Phase 1: rotated mon/mgr/osd/mds keys to aes256k.
-      # Phase 2: rotated CSI/rbd-mirror-peer keys, then force-migrated every
-      # PVC-consuming workload (rollout restart) so all CSI secrets now
-      # reference the new key generation - verified via `ceph health detail`
-      # that client.admin/mon/mds/osd/mgr and all CSI consumers are off aes.
-      # keepPriorKeyCountMax now dropped to 0 to delete the retired CSI keys.
-      # NOT yet restricting security.cephx.allowedCiphers to aes256k-only:
-      # AUTH_INSECURE_ROTATING_SERVICE_KEY_TYPE still needs to clear first
-      # (resolves naturally via auth_service_ticket_ttl, ~1-3h, do not force -
-      # ceph docs: "you probably do not want to do this manually"). Restricting
-      # allowed ciphers before that clears risks invalidating in-flight tickets.
+      # CVE-2025-30156 remediation, complete. Phase 1: rotated mon/mgr/osd/mds
+      # keys to aes256k. Phase 2: rotated CSI/rbd-mirror-peer keys, force-
+      # migrated every PVC-consuming workload, retired the old CSI keys.
+      # Final step: restrict allowedCiphers to aes256k-only, now that
+      # AUTH_INSECURE_CLIENT_KEY_TYPE, AUTH_INSECURE_SERVICE_KEY_TYPE, and
+      # AUTH_INSECURE_ROTATING_SERVICE_KEY_TYPE have all cleared (verified via
+      # `ceph health detail` - no entity, including client.admin, is left on
+      # aes). This is the step Rook's own CRD flags as able to disrupt cluster
+      # availability if done before everything has migrated off aes.
       security:
         cephx:
+          allowedCiphers: [aes256k]
           daemon:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
