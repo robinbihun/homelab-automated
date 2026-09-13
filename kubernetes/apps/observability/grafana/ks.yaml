@@ -11,6 +11,9 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../components/gatus/guarded
+  dependsOn:
+    - name: external-secrets-onepassword
+      namespace: external-secrets
   interval: 1h
   path: ./kubernetes/apps/observability/grafana/app
   postBuild:
