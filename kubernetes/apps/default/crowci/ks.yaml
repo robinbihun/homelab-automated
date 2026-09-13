@@ -13,6 +13,8 @@ spec:
   dependsOn:
     - name: forgejo
       namespace: default
+    - name: external-secrets-onepassword
+      namespace: external-secrets
   postBuild:
     substitute:
       APP: *app
