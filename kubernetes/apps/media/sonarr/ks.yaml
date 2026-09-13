@@ -8,6 +8,8 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
       namespace: storage
+    - name: external-secrets-onepassword
+      namespace: external-secrets
   interval: 1h
   path: ./kubernetes/apps/media/sonarr/app
   postBuild:

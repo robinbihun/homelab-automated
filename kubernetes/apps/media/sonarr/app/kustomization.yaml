@@ -7,6 +7,6 @@ components:
   - ../../../../components/gatus/guarded
 
 resources:
-  - ./secret.sops.yaml
+  - ./external-secret.yaml
   - ./helmrelease.yaml
   - ./pvc.yaml
