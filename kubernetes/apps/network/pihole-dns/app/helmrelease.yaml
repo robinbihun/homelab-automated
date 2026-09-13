@@ -18,7 +18,6 @@ spec:
             name: &secret pihole-dns-secret
             key: api-token
     extraArgs:
-      - --pihole-api-version=6
       - --pihole-server=http://10.10.10.6 # Primary Pi-hole, do not use the VIP here
       - --pihole-tls-skip-verify
     triggerLoopOnEvent: true
