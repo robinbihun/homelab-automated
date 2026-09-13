@@ -47,6 +47,12 @@ spec:
                 port: 8443
 
     cephClusterSpec:
+      # TEMPORARY: mon/mgr/mds already upgraded to v20.2.4, which surfaced a new
+      # "insecure cephx key type" health check (HEALTH_ERR) against the still-legacy
+      # aes keys. Rook pauses the OSD upgrade step while health != OK, leaving OSDs
+      # stuck on mixed 20.2.1/20.2.2. Allow it to continue so OSDs can converge to
+      # 20.2.4; remove once `ceph versions` shows a single version everywhere.
+      skipUpgradeChecks: true
       cephConfig:
         global:
           bdev_enable_discard: "true" # quote
