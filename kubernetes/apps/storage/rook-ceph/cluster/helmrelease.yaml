@@ -47,17 +47,28 @@ spec:
                 port: 8443
 
     cephClusterSpec:
-      # CVE-2025-30156: all daemon cephx keys still use the legacy "aes" cipher,
-      # which 20.2.4 now flags as HEALTH_ERR (AUTH_INSECURE_SERVICE_KEY_TYPE).
-      # Phase 1 of the documented remediation: rotate mon/mgr/osd/mds keys to
-      # aes256k. This does not affect existing client/CSI connections. CSI key
-      # rotation (security.cephx.csi) is a separate, later step since it can
-      # affect existing PV mounts.
+      # CVE-2025-30156: cephx keys still used the legacy "aes" cipher, which
+      # 20.2.4 flags as insecure. Phase 1 (done): rotated mon/mgr/osd/mds keys
+      # to aes256k via security.cephx.daemon. Phase 2 (this): rotate CSI and
+      # rbd-mirror-peer client keys. keepPriorKeyCountMax:1 keeps the prior CSI
+      # key active so already-mounted PVs keep working; new mounts get the new
+      # key immediately, existing ones migrate as pods naturally reschedule.
+      # rbd-mirror-peer isn't in use on this cluster (no CephRBDMirror/peers),
+      # so rotating it is safe with no live peers to disrupt.
       security:
         cephx:
           daemon:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
+          csi:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+            keyType: aes256k
+            keepPriorKeyCountMax: 1
+          rbdMirrorPeer:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+            keyType: aes256k
       cephConfig:
         global:
           bdev_enable_discard: "true" # quote
