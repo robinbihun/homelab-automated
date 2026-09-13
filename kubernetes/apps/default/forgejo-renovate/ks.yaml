@@ -10,6 +10,9 @@ spec:
       app.kubernetes.io/name: *app
   interval: 1h
   path: ./kubernetes/apps/default/forgejo-renovate/app
+  dependsOn:
+    - name: external-secrets-onepassword
+      namespace: external-secrets
   postBuild:
     substitute:
       APP: *app
