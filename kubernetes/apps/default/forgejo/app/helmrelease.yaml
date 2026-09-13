@@ -12,7 +12,7 @@ spec:
     image:
       registry: code.forgejo.org
       repository: forgejo/forgejo
-      tag: 15.0.6-rootless
+      tag: 16.0.4-rootless
     gitea:
       admin:
         existingSecret: forgejo-admin-secret
