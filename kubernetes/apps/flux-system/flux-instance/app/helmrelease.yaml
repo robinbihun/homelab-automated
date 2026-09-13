@@ -43,10 +43,10 @@ spec:
               kind: Deployment
               name: (kustomize-controller|helm-controller|source-controller)
           - # Size memory to observed usage (2026-08-02 audit, 7d p95/max):
-            # helm-controller 90/126Mi, kustomize-controller 106/134Mi,
-            # source-controller 50/63Mi, notification-controller 39/48Mi.
+            # kustomize-controller 106/134Mi, source-controller 50/63Mi,
+            # notification-controller 39/48Mi.
             # Request covers p95 with headroom; limit is ~2x the highest
-            # observed max across all four rather than a flat 1Gi ceiling.
+            # observed max across these three rather than a flat 1Gi ceiling.
             patch: |
               apiVersion: apps/v1
               kind: Deployment
@@ -64,7 +64,31 @@ spec:
                             memory: 256Mi
             target:
               kind: Deployment
-              name: (kustomize-controller|helm-controller|source-controller|notification-controller)
+              name: (kustomize-controller|source-controller|notification-controller)
+          - # helm-controller sized separately: with --concurrent=10 it runs up
+            # to 10 Helm chart render/diffs in parallel (e.g. rook-ceph-operator,
+            # cilium, kube-prometheus-stack), so its peak is driven by fan-out
+            # concurrency, not steady-state usage. The shared 256Mi limit
+            # OOMKilled it repeatedly during a full reconcile of 36
+            # HelmReleases (OOMWatch fired at 251.6/256Mi, 2026-09-13).
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: helm-controller
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: manager
+                        resources:
+                          requests:
+                            memory: 256Mi
+                          limits:
+                            memory: 512Mi
+            target:
+              kind: Deployment
+              name: helm-controller
           - # Enable in-memory kustomize builds
             patch: |
               - op: add
