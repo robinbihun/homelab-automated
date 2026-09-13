@@ -34,8 +34,23 @@ spec:
           name: rook-csi-operator-image-set-configmap
         nodePlugin:
           priorityClassName: system-node-critical
+          # Must run on every node that could mount a Ceph volume, including
+          # k8s-04/05 now that they're tainted node-type=compute:NoSchedule.
+          tolerations:
+            - operator: Exists
         controllerPlugin:
           priorityClassName: system-cluster-critical
+          # Sidecars (csi-provisioner/attacher/resizer/snapshotter) were
+          # running at low-single-digit-millicore usage against 100-250m
+          # requests each (2026-08-02 audit) — trimmed since these controller
+          # pods are relocating to CPU-constrained control-plane nodes and
+          # every reclaimed core there matters.
+          resources:
+            requests:
+              cpu: 20m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
 
     drivers:
       rbd:

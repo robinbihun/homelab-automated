@@ -11,3 +11,10 @@ spec:
   values:
     serviceMonitor:
       create: true
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi # 7d p95 205Mi, max 232Mi (2026-08-02 audit) — was 64Mi
+      limits:
+        cpu: 500m
+        memory: 384Mi # ~1.6x observed max, not the chart's 1Gi default

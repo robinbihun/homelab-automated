@@ -51,9 +51,9 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 2Gi
+                memory: 768Mi # 7d p95 536Mi, max 684Mi (2026-08-02 audit)
               limits:
-                memory: 4Gi
+                memory: 2Gi # ~3x observed max; was 4Gi, kept above request for transcode bursts
     service:
       app:
         controller: jellyfin

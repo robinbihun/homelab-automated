@@ -1,4 +1,16 @@
 ---
+# 7d observed usage (2026-08-02 audit): patroni ~148Mi p95, cluster-controller
+# ~123Mi p95, combined pod well under the auto-generated keycloak-db-default
+# profile's 2Gi/1cpu. This profile replaces that default with sizing based on
+# real usage, with headroom for query/cache growth.
+apiVersion: stackgres.io/v1
+kind: SGInstanceProfile
+metadata:
+  name: keycloak-db-small
+spec:
+  cpu: '500m'
+  memory: '1Gi'
+---
 apiVersion: stackgres.io/v1
 kind: SGCluster
 metadata:
@@ -7,6 +19,7 @@ spec:
   instances: 1
   postgres:
     version: '18'
+  sgInstanceProfile: keycloak-db-small
   pods:
     persistentVolume:
       size: '2Gi'

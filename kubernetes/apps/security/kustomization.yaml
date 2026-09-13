@@ -9,5 +9,3 @@ components:
 
 resources:
   - ./namespace.yaml
-  # - ./dependencytrack/ks.yaml
-  # - ./kyverno/ks.yaml

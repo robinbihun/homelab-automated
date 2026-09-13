@@ -71,6 +71,8 @@ nodes:
         dhcp: true
     nodeLabels:
       node-type: compute
+    nodeTaints:
+      node-type: compute:NoSchedule
   - hostname: "k8s-05"
     ipAddress: "10.10.10.35"
     installDisk: "/dev/nvme1n1"
@@ -84,6 +86,8 @@ nodes:
         dhcp: true
     nodeLabels:
       node-type: compute
+    nodeTaints:
+      node-type: compute:NoSchedule
 
 # Global patches
 patches:

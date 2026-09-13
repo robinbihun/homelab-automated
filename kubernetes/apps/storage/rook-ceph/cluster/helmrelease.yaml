@@ -77,24 +77,27 @@ spec:
           - name: rook
             enabled: true
 
-      # This is a homelab, let's keep resource usage reasonable
+      # This is a homelab, let's keep resource usage reasonable.
+      # Sizes below are set from 7d p95/max observed usage (2026-08-02 capacity
+      # audit): mgr and mon were previously under their request (real OOM risk
+      # under node memory pressure); osd/mds requests were roomier than needed.
       resources:
         mgr:
           requests:
             cpu: 100m
-            memory: 512Mi
+            memory: 1792Mi # active mgr (pg_autoscaler etc) observed up to 1731Mi
           limits:
-            memory: 2Gi
+            memory: 3Gi
         mon:
           requests:
             cpu: 50m
-            memory: 512Mi
+            memory: 1280Mi # observed up to 963Mi; headroom for quorum/compaction spikes
           limits:
             memory: 2Gi
         osd:
           requests:
             cpu: 200m
-            memory: 2Gi
+            memory: 1792Mi # observed up to 1630Mi; conservative multiple of max, not p95
           limits:
             memory: 6Gi
         mgr-sidecar:
@@ -115,6 +118,27 @@ spec:
             memory: 64Mi
           limits:
             memory: 256Mi
+
+      # k8s-04/k8s-05 are tainted node-type=compute:NoSchedule (llmkube gets
+      # dedicated headroom for CPU inference). OSD (and osd-prepare) must still
+      # land on its own node specifically, since each one owns a local NVMe
+      # device that only exists on that host — so only osd/prepareosd tolerate
+      # the taint here. mon/mgr are intentionally left without a toleration:
+      # they have no local-disk dependency and are better off scheduled on
+      # k8s-01/02/03, which have spare capacity.
+      placement:
+        osd:
+          tolerations:
+            - key: node-type
+              operator: Equal
+              value: compute
+              effect: NoSchedule
+        prepareosd:
+          tolerations:
+            - key: node-type
+              operator: Equal
+              value: compute
+              effect: NoSchedule
 
       storage:
         useAllNodes: false
@@ -187,9 +211,9 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 1Gi
+                memory: 512Mi # observed p95 105-254Mi, max up to 290Mi
               limits:
-                memory: 4Gi
+                memory: 2Gi
 
         storageClass:
           enabled: true
