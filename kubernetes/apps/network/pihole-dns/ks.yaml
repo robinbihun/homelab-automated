@@ -4,6 +4,9 @@ kind: Kustomization
 metadata:
   name: pihole-dns
 spec:
+  dependsOn:
+    - name: external-secrets-onepassword
+      namespace: external-secrets
   interval: 1h
   path: ./kubernetes/apps/network/pihole-dns/app
   postBuild:
