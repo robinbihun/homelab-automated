@@ -1,7 +1,7 @@
 [tools]
 # Repository Management
 pkl = "0.31.1"
-hk = "1.48.0"
+hk = "2.0.0"
 prettier = "3.8.4"
 ruff = "0.15.18"
 shellcheck = "0.11"
