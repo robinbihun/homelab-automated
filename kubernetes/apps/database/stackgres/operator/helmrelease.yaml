@@ -20,6 +20,15 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  valuesFrom:
+    - kind: Secret
+      name: stackgres-admin-secret
+      valuesKey: username
+      targetPath: authentication.user
+    - kind: Secret
+      name: stackgres-admin-secret
+      valuesKey: password
+      targetPath: authentication.password
   values:
     deploy:
       operator: true
@@ -28,6 +37,3 @@ spec:
     adminui:
       service:
         exposeHTTP: true
-    authentication:
-      user: admin
-      password: thisisatest

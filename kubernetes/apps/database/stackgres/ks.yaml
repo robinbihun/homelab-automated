@@ -9,6 +9,9 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: external-secrets-onepassword
+      namespace: external-secrets
   path: ./kubernetes/apps/database/stackgres/operator
   postBuild:
     substitute:
