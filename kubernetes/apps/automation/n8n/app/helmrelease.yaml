@@ -1,0 +1,49 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: n8n
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: n8n
+  interval: 1h
+  valuesFrom:
+    - kind: Secret
+      name: n8n-db-secret
+      valuesKey: db-username
+      targetPath: main.secret.db.postgresdb.user
+    - kind: Secret
+      name: n8n-db-secret
+      valuesKey: db-password
+      targetPath: main.secret.db.postgresdb.password
+    - kind: Secret
+      name: n8n-secret
+      valuesKey: encryption-key
+      targetPath: main.secret.n8n.encryption_key
+  values:
+    main:
+      config:
+        db:
+          type: postgresdb
+          postgresdb:
+            host: n8n-db.automation.svc.cluster.local
+            port: 5432
+            database: n8n
+        n8n:
+          host: n8n.${SECRET_DOMAIN}
+          protocol: https
+          proxy_hops: 1
+          editor_base_url: https://n8n.${SECRET_DOMAIN}/
+          webhook_url: https://n8n.${SECRET_DOMAIN}/
+
+      persistence:
+        enabled: true
+        type: dynamic
+        size: 2Gi
+
+      service:
+        port: 80
+
+    ingress:
+      enabled: false

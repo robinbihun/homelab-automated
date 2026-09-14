@@ -1,0 +1,73 @@
+---
+apiVersion: stackgres.io/v1
+kind: SGCluster
+metadata:
+  name: n8n-db
+spec:
+  instances: 1
+  postgres:
+    version: '18'
+  pods:
+    persistentVolume:
+      size: '2Gi'
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: n8n-db-init
+spec:
+  backoffLimit: 10
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        - name: wait-for-db
+          image: postgres:18
+          command:
+            - /bin/sh
+            - -c
+            - until psql -h n8n-db.automation.svc.cluster.local -U postgres -c "SELECT 1" > /dev/null 2>&1; do echo "waiting for n8n-db to be fully initialized"; sleep 10; done
+          env:
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db
+                  key: superuser-username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db
+                  key: superuser-password
+      containers:
+        - name: init
+          image: postgres:18
+          command:
+            - psql
+            - -h
+            - n8n-db.automation.svc.cluster.local
+            - -U
+            - postgres
+            - -f
+            - /scripts/init.sql
+          env:
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db
+                  key: superuser-username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: n8n-db
+                  key: superuser-password
+          volumeMounts:
+            - name: init-sql
+              mountPath: /scripts
+      volumes:
+        - name: init-sql
+          secret:
+            secretName: n8n-db-secret
+            items:
+              - key: db-init-sql
+                path: init.sql

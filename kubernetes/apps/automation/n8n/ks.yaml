@@ -2,22 +2,21 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app keycloak
-  namespace: &namespace default
+  name: &app n8n
+  namespace: &namespace automation
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   interval: 1h
-  path: ./kubernetes/apps/default/keycloak/app
+  path: ./kubernetes/apps/automation/n8n/app
   dependsOn:
     - name: external-secrets-onepassword
       namespace: external-secrets
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: auth
-      GATUS_IGNORE_REDIRECT: "false"
+      GATUS_SUBDOMAIN: n8n
     substituteFrom:
       - name: cluster-secrets
         kind: Secret
