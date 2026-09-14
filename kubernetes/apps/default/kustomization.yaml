@@ -9,6 +9,7 @@ components:
 
 resources:
   - ./crowci/ks.yaml
+  - ./dash/ks.yaml
   - ./forgejo/ks.yaml
   - ./forgejo-renovate/ks.yaml
   - ./nebula-sync/ks.yaml
