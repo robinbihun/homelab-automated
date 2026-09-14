@@ -4,3 +4,4 @@ kind: Kustomization
 namespace: kyverno
 resources:
   - ./helmrelease.yaml
+  - ./ocirepository.yaml
