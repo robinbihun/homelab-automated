@@ -52,13 +52,26 @@ spec:
               target:
                 group: helm.toolkit.fluxcd.io
                 kind: HelmRelease
+            - # Slow ESO's polling of 1Password (was hitting 1Password's API
+              # rate limit at the default 1h refreshInterval). Force a
+              # one-off refresh with:
+              #   kubectl annotate externalsecret <name> -n <ns> force-sync=$(date +%s) --overwrite
+              patch: |-
+                apiVersion: external-secrets.io/v1
+                kind: ExternalSecret
+                metadata:
+                  name: _
+                spec:
+                  refreshInterval: 168h
+              target:
+                group: external-secrets.io
+                kind: ExternalSecret
       target:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization
-    - # Slow ESO's polling of 1Password (was hitting 1Password's API rate
-      # limit at the default 1h refreshInterval). Force a one-off refresh
-      # with:
-      #   kubectl annotate externalsecret <name> -n <ns> force-sync=$(date +%s) --overwrite
+    - # Same ExternalSecret slowdown as above, but for resources rendered
+      # directly under this top-level Kustomization (e.g. the shared
+      # forgejo-pull-secrets sops component) rather than inside a child one.
       patch: |-
         apiVersion: external-secrets.io/v1
         kind: ExternalSecret
