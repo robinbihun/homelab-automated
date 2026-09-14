@@ -29,8 +29,7 @@ spec:
             env:
               APP_URL: https://id.${SECRET_DOMAIN}
               # internal-only, fronted solely by envoy-internal, so trusting
-              # all proxies is acceptable here (same posture as keycloak's
-              # unrestricted xforwarded headers)
+              # all proxies is acceptable here
               TRUST_PROXY: "true"
               PUID: "1000"
               PGID: "1000"

@@ -13,8 +13,6 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
       namespace: storage
-    - name: keycloak
-      namespace: default
     - name: external-secrets-onepassword
       namespace: external-secrets
   postBuild:
