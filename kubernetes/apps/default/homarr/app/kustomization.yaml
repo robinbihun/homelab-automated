@@ -4,6 +4,6 @@ kind: Kustomization
 components:
   - ../../../../components/gatus/guarded
 resources:
-  - ./database.yaml
+  - ./pvc.yaml
   - ./external-secret.yaml
   - ./helmrelease.yaml
