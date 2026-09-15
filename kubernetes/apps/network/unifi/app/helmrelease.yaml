@@ -23,15 +23,20 @@ spec:
         containers:
           app:
             image:
-              repository: lscr.io/linuxserver/unifi-network-application
-              tag: 10.6.101
+              # linuxserver/unifi-network-application requires an external
+              # MongoDB and hangs waiting for MONGO_HOST otherwise; this
+              # image bundles its own, matching how a physical controller
+              # behaves as a single self-contained unit
+              repository: jacobalberty/unifi
+              tag: v10.0.162
             env:
-              # entrypoint needs to start as root to chown /config, then
-              # drops to this uid/gid - can't be locked down to non-root at
-              # the pod level without patching the upstream image
-              PUID: "1000"
-              PGID: "1000"
-              # unset: uses the bundled MongoDB instead of an external one
+              # image auto-imports this cert into its Java keystore
+              # (/unifi/data/keystore) any time it changes, replacing the
+              # self-signed default - reuses the cluster's existing wildcard
+              # cert rather than issuing a dedicated one
+              CERTNAME: tls.crt
+              CERT_PRIVATE_NAME: tls.key
+              CERT_IS_CHAIN: "true"
             securityContext:
               allowPrivilegeEscalation: false
             resources:
@@ -55,8 +60,26 @@ spec:
           discovery:
             port: 10001
             protocol: UDP
+    route:
+      app:
+        hostnames:
+          - "unifi.${SECRET_DOMAIN}"
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: unifi
+                port: 8443
     persistence:
-      config:
+      data:
         existingClaim: unifi
         globalMounts:
-          - path: /config
+          - path: /unifi/data
+      cert:
+        type: secret
+        name: "${SECRET_DOMAIN/./-}-production-tls"
+        globalMounts:
+          - path: /unifi/cert
+            readOnly: true
