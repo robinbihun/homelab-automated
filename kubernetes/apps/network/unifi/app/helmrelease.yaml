@@ -20,6 +20,14 @@ spec:
   values:
     controllers:
       unifi:
+        pod:
+          # broadcast device-discovery (10001/udp) never crosses the pod
+          # network overlay - Cilium's L2 announcement only ARPs for the
+          # Service VIP, it doesn't forward general LAN broadcast traffic.
+          # hostNetwork puts the pod on the node's real interface, which
+          # already receives that broadcast since the nodes sit on the LAN
+          hostNetwork: true
+          dnsPolicy: ClusterFirstWithHostNet
         containers:
           app:
             image:
