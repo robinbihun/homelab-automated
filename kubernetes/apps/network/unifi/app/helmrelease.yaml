@@ -49,6 +49,11 @@ spec:
       app:
         controller: unifi
         type: LoadBalancer
+        annotations:
+          # pinned: the pool covers the whole /24, which includes
+          # statically-assigned LAN devices (e.g. TrueNAS at .2) -
+          # auto-allocation isn't safe here, see envoy-internal/-external
+          lbipam.cilium.io/ips: "10.10.10.43"
         ports:
           https:
             port: 8443
