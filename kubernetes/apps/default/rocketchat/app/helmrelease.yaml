@@ -1,0 +1,93 @@
+---
+# yaml-language-server: $schema=https://homelab-schemas-epg.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rocketchat
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: rocketchat
+      version: 7.0.2
+      sourceRef:
+        kind: HelmRepository
+        name: rocketchat-charts
+        namespace: default
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  valuesFrom:
+    - kind: Secret
+      name: rocketchat-db-secret
+      valuesKey: mongodb-root-password
+      targetPath: mongodb.auth.rootPassword
+    - kind: Secret
+      name: rocketchat-db-secret
+      valuesKey: mongodb-password
+      targetPath: mongodb.auth.passwords[0]
+    - kind: Secret
+      name: rocketchat-db-secret
+      valuesKey: mongodb-replica-set-key
+      targetPath: mongodb.auth.replicaSetKey
+  values:
+    host: chat.${SECRET_DOMAIN}
+    replicaCount: 1
+
+    # Enterprise microservices/NATS split isn't needed at 5-user scale;
+    # monolith keeps the pod count down.
+    microservices:
+      enabled: false
+
+    ingress:
+      enabled: false
+
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        memory: 1Gi
+
+    extraEnv:
+      - name: ADMIN_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: rocketchat-secret
+            key: admin-username
+      - name: ADMIN_PASS
+        valueFrom:
+          secretKeyRef:
+            name: rocketchat-secret
+            key: admin-password
+      - name: ADMIN_EMAIL
+        value: admin@${SECRET_DOMAIN}
+
+    podMonitor:
+      enabled: false
+    prometheusScraping:
+      enabled: false
+
+    mongodb:
+      # architecture: replicaset (even at replicaCount: 1) is required for
+      # the oplog/change-stream features Rocket.Chat depends on; this chart
+      # does not support a true standalone MongoDB.
+      architecture: replicaset
+      replicaCount: 1
+      persistence:
+        size: 5Gi
+      metrics:
+        enabled: false
+      serviceMonitor:
+        enabled: false
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          memory: 1Gi

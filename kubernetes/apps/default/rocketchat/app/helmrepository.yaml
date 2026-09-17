@@ -1,0 +1,9 @@
+---
+# yaml-language-server: $schema=https://homelab-schemas-epg.pages.dev/source.toolkit.fluxcd.io/helmrepository_v1.json
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: rocketchat-charts
+spec:
+  interval: 1h
+  url: https://rocketchat.github.io/helm-charts/
