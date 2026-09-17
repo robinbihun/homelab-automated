@@ -40,8 +40,14 @@ spec:
     replicaCount: 1
 
     # Enterprise microservices/NATS split isn't needed at 5-user scale;
-    # monolith keeps the pod count down.
+    # monolith keeps the pod count down. nats.enabled must be set
+    # explicitly: the NATS subchart's own default (enabled: true) wins the
+    # `nats.enabled, microservices.enabled` OR-condition before it ever
+    # falls through to microservices.enabled, despite what the chart's
+    # values.yaml comment claims (verified with `helm template`).
     microservices:
+      enabled: false
+    nats:
       enabled: false
 
     ingress:
@@ -50,9 +56,9 @@ spec:
     resources:
       requests:
         cpu: 200m
-        memory: 512Mi
+        memory: 768Mi
       limits:
-        memory: 1Gi
+        memory: 2Gi
 
     extraEnv:
       - name: ADMIN_USERNAME
