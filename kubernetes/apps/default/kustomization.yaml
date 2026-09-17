@@ -14,3 +14,4 @@ resources:
   - ./homarr/ks.yaml
   - ./nebula-sync/ks.yaml
   - ./renovate/ks.yaml
+  - ./rocketchat/ks.yaml
