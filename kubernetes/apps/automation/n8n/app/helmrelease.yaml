@@ -27,7 +27,7 @@ spec:
         db:
           type: postgresdb
           postgresdb:
-            host: n8n-db.automation.svc.cluster.local
+            host: n8n-db
             port: 5432
             database: n8n
         n8n:

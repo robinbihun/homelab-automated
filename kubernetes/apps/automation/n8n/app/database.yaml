@@ -27,7 +27,7 @@ spec:
           command:
             - /bin/sh
             - -c
-            - until psql -h n8n-db.automation.svc.cluster.local -U postgres -c "SELECT 1" > /dev/null 2>&1; do echo "waiting for n8n-db to be fully initialized"; sleep 10; done
+            - until psql -h n8n-db -U postgres -c "SELECT 1" > /dev/null 2>&1; do echo "waiting for n8n-db to be fully initialized"; sleep 10; done
           env:
             - name: PGUSER
               valueFrom:
@@ -45,7 +45,7 @@ spec:
           command:
             - psql
             - -h
-            - n8n-db.automation.svc.cluster.local
+            - n8n-db
             - -U
             - postgres
             - -f
