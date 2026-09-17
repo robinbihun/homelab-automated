@@ -22,22 +22,18 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  valuesFrom:
-    - kind: Secret
-      name: rocketchat-db-secret
-      valuesKey: mongodb-root-password
-      targetPath: mongodb.auth.rootPassword
-    - kind: Secret
-      name: rocketchat-db-secret
-      valuesKey: mongodb-password
-      targetPath: mongodb.auth.passwords[0]
-    - kind: Secret
-      name: rocketchat-db-secret
-      valuesKey: mongodb-replica-set-key
-      targetPath: mongodb.auth.replicaSetKey
   values:
     host: chat.${SECRET_DOMAIN}
     replicaCount: 1
+
+    # Chart's bundled mongodb subchart pulls bitnamilegacy/mongodb and
+    # bitnamilegacy/os-shell (frozen, no longer receiving updates since
+    # Broadcom's 2025 Bitnami policy change). MongoDB instead runs as a
+    # hand-rolled StatefulSet in ./database.yaml on the official mongo
+    # image, wired in here via existingMongodbSecret.
+    mongodb:
+      enabled: false
+    existingMongodbSecret: rocketchat-db-secret
 
     # Enterprise microservices/NATS split isn't needed at 5-user scale;
     # monolith keeps the pod count down. nats.enabled must be set
@@ -78,22 +74,3 @@ spec:
       enabled: false
     prometheusScraping:
       enabled: false
-
-    mongodb:
-      # architecture: replicaset (even at replicaCount: 1) is required for
-      # the oplog/change-stream features Rocket.Chat depends on; this chart
-      # does not support a true standalone MongoDB.
-      architecture: replicaset
-      replicaCount: 1
-      persistence:
-        size: 5Gi
-      metrics:
-        enabled: false
-      serviceMonitor:
-        enabled: false
-      resources:
-        requests:
-          cpu: 200m
-          memory: 512Mi
-        limits:
-          memory: 1Gi
