@@ -182,7 +182,7 @@ spec:
             - {name: DS_PROMETHEUS, value: Prometheus}
         prometheus:
           gnetId: 19105
-          revision: 7
+          revision: 9
           datasource: Prometheus
     sidecar:
       dashboards:
