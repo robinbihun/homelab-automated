@@ -149,7 +149,7 @@ spec:
           datasource: Prometheus
         kubernetes-api-server:
           gnetId: 15761
-          revision: 19
+          revision: 21
           datasource: Prometheus
         kubernetes-coredns:
           gnetId: 15762
