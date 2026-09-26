@@ -169,7 +169,7 @@ spec:
           datasource: Prometheus
         kubernetes-pods:
           gnetId: 15760
-          revision: 36
+          revision: 41
           datasource: Prometheus
         kubernetes-volumes:
           gnetId: 11454
