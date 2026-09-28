@@ -40,6 +40,7 @@ flux2 = "2.9.5"
 
 # Cloudflare Tools
 cloudflared = "2026.9.1"
+talosctl = "latest"
 
 [env]
 _.python.venv = { path = "{{config_root}}/.venv", create = true }
@@ -53,6 +54,13 @@ TALOS_DIR = "{{ config_root }}/talos"
 PRIVATE_DIR = "{{ config_root }}/.private"
 TALOSCONFIG = "{{ config_root }}/talos/clusterconfig/talosconfig"
 KUBECONFIG = "{{ config_root }}/kubeconfig"
+
+[tasks.copykubeconfig]
+description = "Copies the local kubeconfig file to ~/.kube/config"
+run = [
+    "cp ~/.kube/config ~/.kube/config-$(date +%Y%m%d%H%M%S)",
+    "cp ./kubeconfig ~/.kube/config"
+]
 
 [tasks.reconcile]
 description = "Reconcile configuration changes to the cluster"

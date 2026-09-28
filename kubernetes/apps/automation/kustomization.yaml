@@ -9,4 +9,5 @@ components:
 
 resources:
   - ./namespace.yaml
+  - ./busabase/ks.yaml
   - ./n8n/ks.yaml
