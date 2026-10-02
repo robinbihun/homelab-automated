@@ -37,6 +37,7 @@ spec:
     configuration:
       uploaderType: kopia
       defaultSnapshotMoveData: true
+      features: EnableCSI
       backupStorageLocation:
         - name: garage
           provider: aws
