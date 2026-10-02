@@ -62,6 +62,8 @@ spec:
       rbd:
         enabled: true
         name: storage.rbd.csi.ceph.com
+        # Required for the csi-snapshotter sidecar; Velero's data mover needs it.
+        snapshotPolicy: volumeSnapshot
       cephfs:
         enabled: true
         name: storage.cephfs.csi.ceph.com
