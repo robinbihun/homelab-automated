@@ -25,6 +25,8 @@ Kubernetes Services:
 	k8s_gateway (DNS): 10.10.10.40
 	internal_gateway load balancer ip: 10.10.10.41
 	external_gateway load balancer ip: 10.10.10.42
+	unifi load balancer ip: 10.10.10.43
+	Cilium LB IP pool: 10.10.10.40 - 10.10.10.59 (pin addresses with lbipam.cilium.io/ips; nothing else in the pool range)
 
 Security:
 	User Identity and Authentication using KeyCloak

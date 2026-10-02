@@ -58,7 +58,6 @@ spec:
     service:
       app:
         controller: jellyfin
-        type: LoadBalancer
         ports:
           http:
             port: &port 8096

@@ -4,9 +4,11 @@ kind: CiliumLoadBalancerIPPool
 metadata:
   name: pool
 spec:
-  allowFirstLastIPs: "No"
   blocks:
-    - cidr: "10.10.10.0/24"
+    # Dedicated LB range; the rest of 10.10.10.0/24 is the router, DHCP leases
+    # and other hosts, which LB IPAM knows nothing about.
+    - start: "10.10.10.40"
+      stop: "10.10.10.59"
 ---
 apiVersion: cilium.io/v2alpha1
 kind: CiliumL2AnnouncementPolicy
