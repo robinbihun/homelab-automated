@@ -10,6 +10,13 @@ spec:
   pods:
     persistentVolume:
       size: '2Gi'
+  configurations:
+    backups:
+      - sgObjectStorage: garage-backups
+        path: stackgres/default/forgejo-db/18
+        cronSchedule: '15 3 * * *'
+        retention: 14
+        compression: lz4
 ---
 apiVersion: batch/v1
 kind: Job

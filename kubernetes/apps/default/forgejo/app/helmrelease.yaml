@@ -47,6 +47,10 @@ spec:
       hostnames:
         - code.${SECRET_DOMAIN}
 
+    persistence:
+      labels:
+        homelab/backup: "true"
+
     postgresql:
       enabled: false
 
