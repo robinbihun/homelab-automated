@@ -1,0 +1,20 @@
+---
+apiVersion: stackgres.io/v1beta1
+kind: SGObjectStorage
+metadata:
+  name: garage-backups
+spec:
+  type: s3Compatible
+  s3Compatible:
+    bucket: k8s-backups
+    region: garage
+    endpoint: ${GARAGE_S3_ENDPOINT}
+    enablePathStyleAddressing: true
+    awsCredentials:
+      secretKeySelectors:
+        accessKeyId:
+          name: garage-s3-backups
+          key: accessKeyId
+        secretAccessKey:
+          name: garage-s3-backups
+          key: secretAccessKey

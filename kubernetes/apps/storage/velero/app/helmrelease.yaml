@@ -1,0 +1,103 @@
+---
+# yaml-language-server: $schema=https://homelab-schemas-epg.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: velero
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: velero
+      version: 12.2.0
+      sourceRef:
+        kind: HelmRepository
+        name: vmware-tanzu
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  upgrade:
+    crds: CreateReplace
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:v1.14.4
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+
+    credentials:
+      useSecret: true
+      existingSecret: velero-credentials
+
+    configuration:
+      uploaderType: kopia
+      defaultSnapshotMoveData: true
+      backupStorageLocation:
+        - name: garage
+          provider: aws
+          bucket: k8s-backups
+          prefix: velero
+          default: true
+          config:
+            region: garage
+            s3ForcePathStyle: "true"
+            # Several non-AWS S3 servers reject the SDK's default checksums.
+            checksumAlgorithm: ""
+            s3Url: ${GARAGE_S3_ENDPOINT}
+      volumeSnapshotLocation: []
+
+    # Data mover: snapshot via Ceph CSI, upload with Kopia from a clone.
+    deployNodeAgent: true
+    nodeAgent:
+      # Data-mover pods must be able to land on any node, including the
+      # node-type=compute:NoSchedule ones.
+      tolerations:
+        - operator: Exists
+
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+      prometheusRule:
+        enabled: true
+        spec:
+          - alert: VeleroBackupFailed
+            annotations:
+              summary: Velero backup from schedule {{ $labels.schedule }} failed
+            expr: velero_backup_last_status{schedule!=""} != 1
+            for: 1h
+            labels:
+              severity: critical
+          - alert: VeleroNoRecentBackup
+            annotations:
+              summary: Velero schedule {{ $labels.schedule }} has not succeeded in 36h
+            expr: |-
+              (
+                (time() - velero_backup_last_successful_timestamp{schedule!=""}) > (36 * 3600)
+                or absent(velero_backup_last_successful_timestamp{schedule!=""})
+              )
+            for: 1h
+            labels:
+              severity: critical
+
+    # Opt-in: only PVCs labelled homelab/backup=true are backed up (data only;
+    # cluster state comes from Flux, Postgres from StackGres WAL-G).
+    schedules:
+      pvc-daily:
+        schedule: "30 3 * * *"
+        useOwnerReferencesInBackup: false
+        template:
+          ttl: 720h # 30d
+          snapshotMoveData: true
+          includedNamespaces: ["*"]
+          includedResources:
+            - persistentvolumeclaims
+            - persistentvolumes
+          labelSelector:
+            matchLabels:
+              homelab/backup: "true"

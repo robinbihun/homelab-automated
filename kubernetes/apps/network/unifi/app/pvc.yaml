@@ -3,6 +3,8 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: unifi
+  labels:
+    homelab/backup: "true"
 spec:
   accessModes:
     - ReadWriteOnce

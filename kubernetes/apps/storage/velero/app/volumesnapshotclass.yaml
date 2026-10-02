@@ -1,0 +1,15 @@
+---
+# Velero picks the class labelled for the driver; the Rook-chart class
+# (csi-ceph-blockpool) is left alone for ad-hoc snapshots.
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: velero-ceph-blockpool
+  labels:
+    velero.io/csi-volumesnapshot-class: "true"
+driver: storage.rbd.csi.ceph.com
+deletionPolicy: Delete
+parameters:
+  clusterID: storage
+  csi.storage.k8s.io/snapshotter-secret-name: rook-csi-rbd-provisioner
+  csi.storage.k8s.io/snapshotter-secret-namespace: storage
