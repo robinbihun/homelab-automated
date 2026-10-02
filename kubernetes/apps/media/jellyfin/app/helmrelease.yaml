@@ -21,6 +21,7 @@ spec:
   values:
     controllers:
       jellyfin:
+        strategy: Recreate
         pod:
           securityContext:
             runAsNonRoot: true
@@ -77,13 +78,10 @@ spec:
       config:
         existingClaim: jellyfin-pvc
       media:
-        enabled: true
-        type: nfs
-        server: ${NFS_HOST}
-        path: /mnt/Storage/Media
+        existingClaim: nas-media
         globalMounts:
           - path: /media
-            readOnly: true          
+            readOnly: true
       tmpfs:
         type: emptyDir
         advancedMounts:

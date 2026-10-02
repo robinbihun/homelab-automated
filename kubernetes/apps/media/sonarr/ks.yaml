@@ -6,6 +6,7 @@ metadata:
   name: &app sonarr
 spec:
   dependsOn:
+    - name: nas-media
     - name: rook-ceph-cluster
       namespace: storage
     - name: external-secrets-onepassword
@@ -18,6 +19,7 @@ spec:
         kind: Secret
     substitute:
       APP: *app
+      GATUS_PATH: /ping
   prune: true
   sourceRef:
     kind: GitRepository

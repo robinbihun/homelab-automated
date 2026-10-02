@@ -4,6 +4,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: radarr
   namespace: media
+  labels:
+    homelab/backup: "true"
 spec:
   accessModes:
     - ReadWriteOnce

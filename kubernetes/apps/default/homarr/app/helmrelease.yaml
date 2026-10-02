@@ -24,7 +24,7 @@ spec:
           app:
             image:
               repository: ghcr.io/homarr-labs/homarr
-              tag: latest
+              tag: v2.0.0
             env:
               AUTH_PROVIDERS: oidc
               AUTH_OIDC_ISSUER: https://id.${SECRET_DOMAIN}

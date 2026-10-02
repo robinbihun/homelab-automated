@@ -12,13 +12,14 @@ spec:
   values:
     controllers:
       sonarr:
+        strategy: Recreate
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
               repository: ghcr.io/home-operations/sonarr
-              tag: "4.0"
+              tag: 4.0.20@sha256:1f19eb5e0f421418c1a956bbe01310a0141423afe28bd9a4b1dcb8629ff2bce2
             env:
               sonarr__APP__INSTANCENAME: Sonarr
               sonarr__APP__THEME: dark
@@ -45,6 +46,16 @@ spec:
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 30
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -61,6 +72,8 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [3000] # NAS media group
+        seccompProfile: { type: RuntimeDefault }
     service:
       app:
         ports:
@@ -82,10 +95,8 @@ spec:
       config:
         existingClaim: "{{ .Release.Name }}"
       media:
-        type: nfs
-        server: ${NFS_HOST}
-        path: /mnt/Storage/Media
+        existingClaim: nas-media
         globalMounts:
-          - path: /data
+          - path: /media
       tmp:
         type: emptyDir

@@ -1,0 +1,136 @@
+---
+# Default-deny for the media namespace plus the minimum needed by jellyfin,
+# radarr, sonarr, seerr and recyclarr. NFS is mounted by the kubelet on the
+# node (not pod traffic), and kubelet probes come from the host, which Cilium
+# always allows, so neither needs a rule here.
+#
+# Default deny: any rule that selects a pod flips it to deny-by-default for that
+# direction. The empty rules make that explicit.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny
+  namespace: media
+spec:
+  endpointSelector: {}
+  ingress:
+    - {}
+  egress:
+    - {}
+---
+# DNS to cluster CoreDNS.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-dns
+  namespace: media
+spec:
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+            k8s-app: kube-dns
+      toPorts:
+        - ports:
+            - { port: "53", protocol: UDP }
+            - { port: "53", protocol: TCP }
+---
+# Internet only (metadata APIs, GitHub for recyclarr, indexers later).
+# RFC1918/CGNAT are excluded so the pods cannot reach the NAS, router or other
+# LAN hosts; cluster pod/service ranges sit inside 10.0.0.0/8.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-internet-egress
+  namespace: media
+spec:
+  endpointSelector: {}
+  egress:
+    - toCIDRSet:
+        - cidr: 0.0.0.0/0
+          except:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
+            - 100.64.0.0/10
+---
+# Web UIs: reachable through the internal gateway only.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-envoy-internal-ingress
+  namespace: media
+spec:
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            gateway.envoyproxy.io/owning-gateway-name: envoy-internal
+      toPorts:
+        - ports:
+            - { port: "80", protocol: TCP }
+            - { port: "8096", protocol: TCP }
+---
+# Pods in the namespace talking to each other (seerr -> arrs/jellyfin,
+# recyclarr -> arrs, arrs -> jellyfin library notifications).
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-intra-namespace
+  namespace: media
+spec:
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - {}
+      toPorts:
+        - ports:
+            - { port: "80", protocol: TCP }
+            - { port: "8096", protocol: TCP }
+  egress:
+    - toEndpoints:
+        - {}
+      toPorts:
+        - ports:
+            - { port: "80", protocol: TCP }
+            - { port: "8096", protocol: TCP }
+---
+# Apps reaching each other / pocket-id via their public hostnames resolve to the
+# internal gateway's LAN IP, which the RFC1918 exclusion above would block.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-envoy-internal-egress
+  namespace: media
+spec:
+  endpointSelector: {}
+  egress:
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: network
+            gateway.envoyproxy.io/owning-gateway-name: envoy-internal
+      toPorts:
+        - ports:
+            - { port: "443", protocol: TCP }
+            - { port: "10443", protocol: TCP }
+---
+# Jellyfin is also exposed directly via its LoadBalancer IP (10.10.10.1:8096)
+# for LAN clients/TVs, bypassing the gateway.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: jellyfin-lb-ingress
+  namespace: media
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: jellyfin
+  ingress:
+    - fromEntities:
+        - world
+        - cluster
+      toPorts:
+        - ports:
+            - { port: "8096", protocol: TCP }
