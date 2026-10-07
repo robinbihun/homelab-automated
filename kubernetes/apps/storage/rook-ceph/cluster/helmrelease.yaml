@@ -1,0 +1,265 @@
+---
+# yaml-language-server: $schema=https://homelab-schemas-epg.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rook-ceph-cluster
+spec:
+  interval: 1h
+  timeout: 15m
+  chartRef:
+    kind: OCIRepository
+    name: rook-ceph-cluster
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    operatorNamespace: storage
+    toolbox:
+      enabled: true
+
+    monitoring:
+      enabled: true
+      createPrometheusRules: false
+
+    route:
+      dashboard:
+        host:
+          name: rook.${SECRET_DOMAIN}
+          path: /
+          pathType: PathPrefix
+        parentRefs:
+          - name: envoy-internal
+            namespace: network
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: rook-ceph-mgr-dashboard
+                namespace: storage
+                port: 8443
+
+    cephClusterSpec:
+      # CVE-2025-30156 remediation, complete. Phase 1: rotated mon/mgr/osd/mds
+      # keys to aes256k. Phase 2: rotated CSI/rbd-mirror-peer keys, force-
+      # migrated every PVC-consuming workload, retired the old CSI keys.
+      # Final step: restrict allowedCiphers to aes256k-only, now that
+      # AUTH_INSECURE_CLIENT_KEY_TYPE, AUTH_INSECURE_SERVICE_KEY_TYPE, and
+      # AUTH_INSECURE_ROTATING_SERVICE_KEY_TYPE have all cleared (verified via
+      # `ceph health detail` - no entity, including client.admin, is left on
+      # aes). This is the step Rook's own CRD flags as able to disrupt cluster
+      # availability if done before everything has migrated off aes.
+      security:
+        cephx:
+          allowedCiphers: [aes256k]
+          daemon:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+          csi:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+            keyType: aes256k
+            keepPriorKeyCountMax: 0
+          rbdMirrorPeer:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+            keyType: aes256k
+      cephConfig:
+        global:
+          bdev_enable_discard: "true" # quote
+          bdev_async_discard_threads: "1" # quote
+          osd_class_update_on_start: "false" # quote
+          device_failure_prediction_mode: local # requires mgr module
+
+      cleanupPolicy:
+        wipeDevicesFromOtherClusters: true
+
+      crashCollector:
+        disable: false
+
+      dashboard:
+        enabled: true
+        ssl: false
+        port: 8443
+        prometheusEndpoint: http://prometheus-operated.observability.svc.cluster.local:9090
+      
+      mgr:
+        modules:
+          - name: diskprediction_local
+            enabled: true
+          - name: insights
+            enabled: true
+          - name: pg_autoscaler
+            enabled: true
+          - name: rook
+            enabled: true
+
+      # This is a homelab, let's keep resource usage reasonable.
+      # Sizes below are set from 7d p95/max observed usage (2026-08-02 capacity
+      # audit): mgr and mon were previously under their request (real OOM risk
+      # under node memory pressure); osd/mds requests were roomier than needed.
+      resources:
+        mgr:
+          requests:
+            cpu: 100m
+            memory: 1792Mi # active mgr (pg_autoscaler etc) observed up to 1731Mi
+          limits:
+            memory: 3Gi
+        mon:
+          requests:
+            cpu: 50m
+            memory: 1280Mi # observed up to 963Mi; headroom for quorum/compaction spikes
+          limits:
+            memory: 2Gi
+        osd:
+          requests:
+            cpu: 200m
+            memory: 1792Mi # observed up to 1630Mi; conservative multiple of max, not p95
+          limits:
+            memory: 6Gi
+        mgr-sidecar:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            memory: 256Mi
+        logcollector:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            memory: 256Mi
+        crashcollector:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            memory: 256Mi
+
+      # k8s-04/k8s-05 are tainted node-type=compute:NoSchedule (llmkube gets
+      # dedicated headroom for CPU inference). OSD (and osd-prepare) must still
+      # land on its own node specifically, since each one owns a local NVMe
+      # device that only exists on that host — so only osd/prepareosd tolerate
+      # the taint here. mon/mgr are intentionally left without a toleration:
+      # they have no local-disk dependency and are better off scheduled on
+      # k8s-01/02/03, which have spare capacity.
+      placement:
+        osd:
+          tolerations:
+            - key: node-type
+              operator: Equal
+              value: compute
+              effect: NoSchedule
+        prepareosd:
+          tolerations:
+            - key: node-type
+              operator: Equal
+              value: compute
+              effect: NoSchedule
+
+      storage:
+        useAllNodes: false
+        useAllDevices: false
+        config:
+          osdsPerDevice: "1"
+        # talos list /dev/disk/by-id
+        # Note: talos install takes up the full disk, must use a separate disk for rook-ceph
+        nodes:
+          - name: "k8s-01"
+            devices:
+              - name: "/dev/disk/by-id/nvme-CT2000P3PSSD8_2424E8B841B0"
+          - name: "k8s-02"
+            devices:
+              - name: "/dev/disk/by-id/nvme-CT2000P3PSSD8_2424E8B841D9"
+          - name: "k8s-03"
+            devices:
+              - name: "/dev/disk/by-id/nvme-CT2000P3PSSD8_2424E8B841D7"
+          - name: "k8s-04" 
+            devices:
+              - name: "/dev/disk/by-id/nvme-KINGSTON_OM8TAP41024K1-A00_50026B73843C1983"
+          - name: "k8s-05" 
+            devices:
+              - name: "/dev/disk/by-id/nvme-KINGSTON_OM8TAP41024K1-A00_50026B73843CDB9A"
+
+    cephBlockPools:
+      - name: ceph-blockpool
+        spec:
+          failureDomain: host
+          replicated:
+            size: 3
+        storageClass:
+          enabled: true
+          name: ceph-block
+          isDefault: true
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          volumeBindingMode: Immediate
+          parameters:
+            imageFormat: "2"
+            imageFeatures: layering
+            csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
+            csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
+            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/node-stage-secret-name: rook-csi-rbd-node
+            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/fstype: ext4
+
+    cephBlockPoolsVolumeSnapshotClass:
+      enabled: true
+      name: csi-ceph-blockpool
+      isDefault: false
+      deletionPolicy: Delete
+
+    cephFileSystems:
+      - name: ceph-filesystem
+        spec:
+          metadataPool:
+            replicated:
+              size: 3
+          dataPools:
+            - name: data0
+              failureDomain: host
+              replicated:
+                size: 3
+          metadataServer:
+            activeCount: 1
+            activeStandby: true
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi # observed p95 105-254Mi, max up to 290Mi
+              limits:
+                memory: 2Gi
+
+        storageClass:
+          enabled: true
+          isDefault: false
+          name: ceph-filesystem
+          pool: data0
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          volumeBindingMode: Immediate
+          parameters:
+            csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+            csi.storage.k8s.io/controller-expand-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+            csi.storage.k8s.io/node-stage-secret-namespace: "{{ .Release.Namespace }}"
+            csi.storage.k8s.io/fstype: ext4
+
+    cephFileSystemVolumeSnapshotClass:
+      enabled: true
+      name: csi-ceph-filesystem
+      isDefault: false
+      deletionPolicy: Delete
+      
+    cephObjectStores: []

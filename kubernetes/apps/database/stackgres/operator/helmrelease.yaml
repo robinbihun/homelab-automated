@@ -1,0 +1,39 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: stackgres
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: stackgres-operator
+      version: 1.19.1
+      sourceRef:
+        kind: HelmRepository
+        name: stackgres-charts
+        namespace: database
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  valuesFrom:
+    - kind: Secret
+      name: stackgres-admin-secret
+      valuesKey: username
+      targetPath: authentication.user
+    - kind: Secret
+      name: stackgres-admin-secret
+      valuesKey: password
+      targetPath: authentication.password
+  values:
+    deploy:
+      operator: true
+      restapi: true
+      collector: false
+    adminui:
+      service:
+        exposeHTTP: true

@@ -1,0 +1,30 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app n8n
+  namespace: &namespace automation
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  interval: 1h
+  path: ./kubernetes/apps/automation/n8n/app
+  dependsOn:
+    - name: external-secrets-onepassword
+      namespace: external-secrets
+  postBuild:
+    substitute:
+      APP: *app
+      GATUS_SUBDOMAIN: n8n
+    substituteFrom:
+      - name: cluster-secrets
+        kind: Secret
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: false

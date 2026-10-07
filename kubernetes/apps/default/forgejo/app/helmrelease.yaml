@@ -1,0 +1,64 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: forgejo
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: forgejo
+  interval: 1h
+  values:
+    image:
+      registry: code.forgejo.org
+      repository: forgejo/forgejo
+      tag: 16.0.5-rootless
+    gitea:
+      admin:
+        existingSecret: forgejo-admin-secret
+        email: "admin@${SECRET_DOMAIN}"
+
+      config:
+        APP_NAME: ${SECRET_DOMAIN} code repository
+        RUN_MODE: prod
+
+      additionalConfigSources:
+        - configMap:
+            name: &configmap forgejo-config
+        - secret:
+            secretName: &configsecret forgejo-config-secret
+      
+      metrics:
+        enabled: true
+
+      podAnnotations:
+        secret.reloader.stakater.com/reload: *configsecret
+        configmap.reloader.stakater.com/reload: *configmap
+
+    ingress:
+      enabled: false
+
+    httpRoute:
+      enabled: true
+      parentRefs:
+        - name: envoy-internal
+          namespace: network
+          sectionName: https
+      hostnames:
+        - code.${SECRET_DOMAIN}
+
+    persistence:
+      labels:
+        homelab/backup: "true"
+
+    postgresql:
+      enabled: false
+
+    postgresql-ha:
+      enabled: false
+
+    valkey-cluster:
+      enabled: false
+
+    valkey:
+      enabled: false

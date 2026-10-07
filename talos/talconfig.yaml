@@ -1,0 +1,104 @@
+---
+clusterName: kubernetes
+
+talosVersion: "${talosVersion}"
+kubernetesVersion: "${kubernetesVersion}"
+
+endpoint: https://10.10.10.30:6443
+additionalApiServerCertSans: &sans
+  - "127.0.0.1"
+  - "10.10.10.30"
+  - "cluster.bihun.dev"
+additionalMachineCertSans: *sans
+
+clusterPodNets: ["10.42.0.0/16"]
+clusterSvcNets: ["10.43.0.0/16"]
+
+# Disable built-in CNI to use Cilium
+cniConfig:
+  name: none
+
+nodes:
+  - hostname: "k8s-01"
+    ipAddress: "10.10.10.31"
+    installDisk: "/dev/sda"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/acf2c3af2b279b000ad35105e18cf8bef93b325f295146cfc38725439b1d1152
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "e8:ff:1e:d2:47:f1"
+        dhcp: true
+        vip:
+          ip: "10.10.10.30"
+  - hostname: "k8s-02"
+    ipAddress: "10.10.10.32"
+    installDisk: "/dev/sda"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/acf2c3af2b279b000ad35105e18cf8bef93b325f295146cfc38725439b1d1152
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "e8:ff:1e:d1:e2:79"
+        dhcp: true
+        vip:
+          ip: "10.10.10.30"
+  - hostname: "k8s-03"
+    ipAddress: "10.10.10.33"
+    installDisk: "/dev/sda"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/acf2c3af2b279b000ad35105e18cf8bef93b325f295146cfc38725439b1d1152
+    controlPlane: true
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "e8:ff:1e:d1:e6:81"
+        dhcp: true
+        vip:
+          ip: "10.10.10.30"
+  - hostname: "k8s-04"
+    ipAddress: "10.10.10.34"
+    installDisk: "/dev/nvme0n1"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/8b690dfa8f9cebd7208a3f2f728f06377b5f468334f480485ad3f77d0cbf107d
+    controlPlane: false
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "38:05:25:36:b0:b1"
+        dhcp: true
+    nodeLabels:
+      node-type: compute
+    nodeTaints:
+      node-type: compute:NoSchedule
+  - hostname: "k8s-05"
+    ipAddress: "10.10.10.35"
+    installDisk: "/dev/nvme1n1"
+    machineSpec:
+      secureboot: false
+    talosImageURL: factory.talos.dev/installer/8b690dfa8f9cebd7208a3f2f728f06377b5f468334f480485ad3f77d0cbf107d
+    controlPlane: false
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: "38:05:25:36:b2:cd"
+        dhcp: true
+    nodeLabels:
+      node-type: compute
+    nodeTaints:
+      node-type: compute:NoSchedule
+
+# Global patches
+patches:
+  - "@./patches/global/machine-files.yaml"
+  - "@./patches/global/machine-kubelet.yaml"
+  - "@./patches/global/machine-network.yaml"
+  - "@./patches/global/machine-sysctls.yaml"
+  - "@./patches/global/machine-time.yaml"
+
+# Controller patches
+controlPlane:
+  patches:
+    - "@./patches/controller/cluster.yaml"
+    - "@./patches/controller/machine-updater.yaml"

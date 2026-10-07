@@ -1,0 +1,76 @@
+---
+# yaml-language-server: $schema=https://homelab-schemas-epg.pages.dev/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: rocketchat
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: rocketchat
+      version: 7.0.2
+      sourceRef:
+        kind: HelmRepository
+        name: rocketchat-charts
+        namespace: default
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    host: chat.${SECRET_DOMAIN}
+    replicaCount: 1
+
+    # Chart's bundled mongodb subchart pulls bitnamilegacy/mongodb and
+    # bitnamilegacy/os-shell (frozen, no longer receiving updates since
+    # Broadcom's 2025 Bitnami policy change). MongoDB instead runs as a
+    # hand-rolled StatefulSet in ./database.yaml on the official mongo
+    # image, wired in here via existingMongodbSecret.
+    mongodb:
+      enabled: false
+    existingMongodbSecret: rocketchat-db-secret
+
+    # Enterprise microservices/NATS split isn't needed at 5-user scale;
+    # monolith keeps the pod count down. nats.enabled must be set
+    # explicitly: the NATS subchart's own default (enabled: true) wins the
+    # `nats.enabled, microservices.enabled` OR-condition before it ever
+    # falls through to microservices.enabled, despite what the chart's
+    # values.yaml comment claims (verified with `helm template`).
+    microservices:
+      enabled: false
+    nats:
+      enabled: false
+
+    ingress:
+      enabled: false
+
+    resources:
+      requests:
+        cpu: 200m
+        memory: 768Mi
+      limits:
+        memory: 2Gi
+
+    extraEnv:
+      - name: ADMIN_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: rocketchat-secret
+            key: admin-username
+      - name: ADMIN_PASS
+        valueFrom:
+          secretKeyRef:
+            name: rocketchat-secret
+            key: admin-password
+      - name: ADMIN_EMAIL
+        value: admin@${SECRET_DOMAIN}
+
+    podMonitor:
+      enabled: false
+    prometheusScraping:
+      enabled: false

@@ -1,0 +1,29 @@
+cluster:
+  allowSchedulingOnControlPlanes: true
+  coreDNS:
+    disabled: true
+  etcd:
+    extraArgs:
+      listen-metrics-urls: http://0.0.0.0:2381
+    advertisedSubnets:
+      - 10.10.10.0/24
+---
+apiVersion: v1alpha1
+kind: KubeAPIServerConfig
+extraArgs:
+  # https://kubernetes.io/docs/tasks/extend-kubernetes/configure-aggregation-layer/
+  enable-aggregator-routing: true
+---
+apiVersion: v1alpha1
+kind: KubeControllerManagerConfig
+extraArgs:
+  bind-address: 0.0.0.0
+---
+apiVersion: v1alpha1
+kind: KubeSchedulerConfig
+extraArgs:
+  bind-address: 0.0.0.0
+---
+apiVersion: v1alpha1
+kind: KubeProxyConfig
+enabled: false

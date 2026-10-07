@@ -1,0 +1,19 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: rocketchat-internal
+  namespace: default
+spec:
+  parentRefs:
+    - name: envoy-internal
+      namespace: network
+      sectionName: https
+  hostnames:
+    - chat.${SECRET_DOMAIN}
+  rules:
+    - backendRefs:
+      # chart's fullname template doesn't dedupe when release name already
+      # matches the chart name, so the Service ends up as "rocketchat-rocketchat"
+      - name: rocketchat-rocketchat
+        port: 80

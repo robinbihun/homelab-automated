@@ -1,0 +1,40 @@
+---
+# One NFS export shared by jellyfin, radarr and sonarr. Everything (library and
+# the future downloads/ dir) must live inside this single export so imports are
+# hardlinks / atomic moves instead of cross-mount copies.
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nas-media
+spec:
+  capacity:
+    storage: 1Ti # nominal, NFS does not enforce it
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nas-media
+  mountOptions:
+    - nfsvers=4.2
+    - hard
+    - noatime
+    - nconnect=4
+  nfs:
+    server: ${NFS_HOST}
+    path: /mnt/Storage/Media
+  claimRef:
+    namespace: media
+    name: nas-media
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nas-media
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ti
+  storageClassName: nas-media
+  volumeName: nas-media
