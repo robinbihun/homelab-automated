@@ -71,6 +71,12 @@ spec:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
             keyType: aes256k
+      # Rook 1.21 flipped the chart default to true; pinned so it can't change
+      # silently. Needs ms_mode on the CSI kernel clients (csi-drivers
+      # kernelMountOptions for CephFS, mapOptions on the ceph-block StorageClass).
+      network:
+        connections:
+          requireMsgr2: true
       cephConfig:
         global:
           bdev_enable_discard: "true" # quote
@@ -204,6 +210,7 @@ spec:
           parameters:
             imageFormat: "2"
             imageFeatures: layering
+            mapOptions: ms_mode=prefer-crc
             csi.storage.k8s.io/provisioner-secret-name: rook-csi-rbd-provisioner
             csi.storage.k8s.io/provisioner-secret-namespace: "{{ .Release.Namespace }}"
             csi.storage.k8s.io/controller-expand-secret-name: rook-csi-rbd-provisioner
