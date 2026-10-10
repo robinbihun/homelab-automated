@@ -67,6 +67,10 @@ spec:
       cephfs:
         enabled: true
         name: storage.cephfs.csi.ceph.com
+        # Kernel clients only speak msgr2 when asked to; required now that the
+        # CephCluster sets requireMsgr2 (mons no longer listen on 6789).
+        kernelMountOptions:
+          ms_mode: prefer-crc
       nfs:
         enabled: false
         name: storage.nfs.csi.ceph.com
