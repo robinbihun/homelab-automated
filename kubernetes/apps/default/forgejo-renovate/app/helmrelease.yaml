@@ -21,9 +21,9 @@ spec:
     renovate:
       config: |
         {
-          "allowPlugins": "false",
-          "allowScripts": "false",
-          "autodiscover": "true",
+          "allowPlugins": false,
+          "allowScripts": false,
+          "autodiscover": true,
           "platform": "forgejo",
           "username": "bihun-bot",
           "endpoint": "https://code.${SECRET_DOMAIN}/",
